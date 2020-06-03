@@ -1,4 +1,4 @@
-package com.sumkor;
+package com.sumkor.ioc.context;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -16,6 +16,5 @@ public class MyBeanTest {
 
 		MyBean myBean = (MyBean) context.getBean("myBean");
 		myBean.sayHello();
-
 	}
 }
