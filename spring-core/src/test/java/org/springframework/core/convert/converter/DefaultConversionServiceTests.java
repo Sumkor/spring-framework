@@ -16,42 +16,24 @@
 
 package org.springframework.core.convert.converter;
 
-import java.awt.Color;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.time.ZoneId;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Currency;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.UUID;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.ConverterNotFoundException;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.util.ClassUtils;
+
+import java.awt.*;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -1163,4 +1145,19 @@ class DefaultConversionServiceTests {
 		}
 	}
 
+	/**
+	 * 测试ConverterFactory StringToNumberConverterFactory
+	 * https://www.cnblogs.com/abcwt112/p/7447435.html
+	 */
+	@Test
+	public void testConversionService2() {
+		Double d = conversionService.convert("1.2", Double.class);
+		System.out.println(d); //1.2
+
+		Integer i = conversionService.convert("2", Integer.class);
+		System.out.println(i); //2
+
+		Byte b = conversionService.convert("0x10", Byte.class);
+		System.out.println(Integer.toBinaryString(b)); //10000
+	}
 }

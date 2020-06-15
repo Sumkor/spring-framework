@@ -6,6 +6,7 @@ group 'org.springframework'
 version '1.0.0.SNAPSHOT'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -20,8 +21,22 @@ dependencies {
     testCompile("javax.annotation:javax.annotation-api")
     testFixturesApi("org.junit.jupiter:junit-jupiter-api")
     testFixturesImplementation("org.assertj:assertj-core")
+
+//    // 支持Junit Jupiter
+//    testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.0")
+//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.0")
+//
+//    // 引入 JUnit Vintage Engine，支持运行 Junit3/4，或者是同 Jupiter tests混合运行
+//    testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.0")
+//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.0")
+//    testCompileOnly("junit:junit:4.12")
+//    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.1.0")
 }
 
+// JUnit 5 = JUnit Platform + JUnit Jupiter + JUnit Vintage
+//    JUnit Platform是在JVM上启动测试框架的基础。
+//    JUnit Jupiter是新编程模型和扩展模型的组合，用于在JUnit 5中编写测试和扩展。
+//    JUnit Vintage提供了一个TestEngine，用于在平台上运行基于JUnit 3和JUnit 4的测试
 test {
     useJUnitPlatform()
 }

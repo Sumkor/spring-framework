@@ -1,6 +1,6 @@
 package com.sumkor.ioc.factory;
 
-import com.sumkor.ioc.context.MyBean;
+import com.sumkor.ioc.bean.MyBean;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.factory.BeanFactory;

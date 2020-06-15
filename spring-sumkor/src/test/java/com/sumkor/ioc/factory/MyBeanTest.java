@@ -1,6 +1,6 @@
 package com.sumkor.ioc.factory;
 
-import com.sumkor.ioc.context.MyBean;
+import com.sumkor.ioc.bean.MyBean;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.support.SimpleInstantiationStrategy;
@@ -23,7 +23,7 @@ public class MyBeanTest {
 	 */
 	@Test
 	public void createBean() throws ClassNotFoundException, NoSuchMethodException {
-		Class<?> clazz = Class.forName("com.sumkor.ioc.context.MyBean");
+		Class<?> clazz = Class.forName("com.sumkor.ioc.bean.MyBean");
 		Constructor<?> constructorToUse = clazz.getDeclaredConstructor();
 		Object object = BeanUtils.instantiateClass(constructorToUse);
 		MyBean myBean = (MyBean) object;

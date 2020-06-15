@@ -1,4 +1,4 @@
-package com.sumkor.ioc.context;
+package com.sumkor.ioc.bean;
 
 /**
  * @author Sumkor
@@ -6,7 +6,7 @@ package com.sumkor.ioc.context;
  */
 public class MyBean {
 
-	public void sayHello(){
+	public void sayHello() {
 		System.out.println("hello 中文");
 	}
 }
