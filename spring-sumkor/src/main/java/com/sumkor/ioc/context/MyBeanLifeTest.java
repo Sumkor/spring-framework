@@ -6,6 +6,7 @@ import org.springframework.beans.factory.support.*;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 
 /**
  * bean生命周期
@@ -18,10 +19,21 @@ public class MyBeanLifeTest {
 
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		/**
+		 * 父类构造方法 创建 beanFactory
+		 * @see GenericApplicationContext#GenericApplicationContext()
+		 */
+
 		context.register(MyBeanLife.class);
 		/**
+		 * 注册 BeanDefinition 至 beanFactory
 		 * @see AnnotatedBeanDefinitionReader#doRegisterBean(java.lang.Class, java.lang.String, java.lang.Class[], java.util.function.Supplier, org.springframework.beans.factory.config.BeanDefinitionCustomizer[])
 		 * @see BeanDefinitionReaderUtils#registerBeanDefinition(org.springframework.beans.factory.config.BeanDefinitionHolder, org.springframework.beans.factory.support.BeanDefinitionRegistry)
+		 */
+
+		context.getBeanFactory().addBeanPostProcessor(new MyBeanPostProcessor());
+		/**
+		 * 添加自定的 BeanPostProcessor
 		 */
 
 		context.refresh();
@@ -50,8 +62,10 @@ public class MyBeanLifeTest {
 		 * 3.2.1 执行 BeanNameAware/BeanFactoryAware 方法
 		 * @see AbstractAutowireCapableBeanFactory#invokeAwareMethods(java.lang.String, java.lang.Object)
 		 *
-		 * 3.2.2 执行 BeanPostProcessor 方法
+		 * 3.2.2 执行 BeanPostProcessor.applyBeanPostProcessorsBeforeInitialization 方法
 		 * @see AbstractAutowireCapableBeanFactory#applyBeanPostProcessorsBeforeInitialization(java.lang.Object, java.lang.String)
+		 *
+		 * 3.2.2.0 执行自定的 BeanPostProcessor 方法
 		 * 3.2.2.1 执行 ApplicationContextAware 方法
 		 * @see org.springframework.context.support.ApplicationContextAwareProcessor#invokeAwareInterfaces(java.lang.Object)
 		 * 3.2.2.2 执行 PostConstruct 注解方法
@@ -59,6 +73,9 @@ public class MyBeanLifeTest {
 		 *
 		 * 3.2.3 执行 InitializingBean 方法
 		 * @see AbstractAutowireCapableBeanFactory#invokeInitMethods(java.lang.String, java.lang.Object, org.springframework.beans.factory.support.RootBeanDefinition)
+		 *
+		 * 3.2.4 执行 执行 BeanPostProcessor.applyBeanPostProcessorsAfterInitialization 方法
+		 * @see AbstractAutowireCapableBeanFactory#applyBeanPostProcessorsAfterInitialization(java.lang.Object, java.lang.String)
 		 */
 
 		MyBeanLife myBeanLife = (MyBeanLife) context.getBean("myBeanLife");
@@ -75,13 +92,21 @@ public class MyBeanLifeTest {
 		/**
 		 * 执行结果：
 		 *
-		 * MyBeanLife
+		 * MyBeanLife.Constructor
+		 *
 		 * BeanNameAware.setBeanName
 		 * BeanFactoryAware.setBeanFactory
+		 *
+		 * MyBeanPostProcessor.postProcessBeforeInitialization
 		 * ApplicationContextAware.setApplicationContext
 		 * @PostConstruct
+		 *
 		 * InitializingBean.afterPropertiesSet
-		 * hello 中文
+		 *
+		 * MyBeanPostProcessor.postProcessAfterInitialization
+		 *
+		 * MyBeanLife.sayHello:哇哦
+		 *
 		 * @PreDestroy
 		 * DisposableBean.destroy
 		 */

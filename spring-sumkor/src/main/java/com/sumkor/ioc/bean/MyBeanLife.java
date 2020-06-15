@@ -15,11 +15,11 @@ import javax.annotation.PreDestroy;
 public class MyBeanLife implements BeanNameAware, BeanFactoryAware, ApplicationContextAware, InitializingBean, DisposableBean {
 
 	public MyBeanLife() {
-		System.out.println("MyBeanLife");
+		System.out.println("MyBeanLife.Constructor");
 	}
 
 	public void sayHello() {
-		System.out.println("hello 中文");
+		System.out.println("MyBeanLife.sayHello:哇哦");
 	}
 
 	@Override
