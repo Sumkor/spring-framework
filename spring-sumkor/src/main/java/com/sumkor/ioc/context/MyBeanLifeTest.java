@@ -1,6 +1,7 @@
 package com.sumkor.ioc.context;
 
 import com.sumkor.ioc.bean.MyBeanLife;
+import com.sumkor.ioc.bean.MyBeanPostProcessor;
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.support.*;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
@@ -71,10 +72,10 @@ public class MyBeanLifeTest {
 		 * 3.2.2.2 执行 PostConstruct 注解方法
 		 * @see InitDestroyAnnotationBeanPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)
 		 *
-		 * 3.2.3 执行 InitializingBean 方法
+		 * 3.2.3 执行 InitializingBean 方法，其中先执行 afterPropertiesSet，再执行 initMethod
 		 * @see AbstractAutowireCapableBeanFactory#invokeInitMethods(java.lang.String, java.lang.Object, org.springframework.beans.factory.support.RootBeanDefinition)
 		 *
-		 * 3.2.4 执行 执行 BeanPostProcessor.applyBeanPostProcessorsAfterInitialization 方法
+		 * 3.2.4 执行 BeanPostProcessor.applyBeanPostProcessorsAfterInitialization 方法
 		 * @see AbstractAutowireCapableBeanFactory#applyBeanPostProcessorsAfterInitialization(java.lang.Object, java.lang.String)
 		 */
 

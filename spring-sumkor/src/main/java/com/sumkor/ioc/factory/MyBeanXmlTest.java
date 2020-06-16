@@ -17,7 +17,7 @@ import org.springframework.util.PropertyPlaceholderHelper;
  * @author Sumkor
  * @since 2020/5/14
  */
-public class MyBeanTest {
+public class MyBeanXmlTest {
 
 	public static void main(String[] args) {
 //		BeanFactory bf = new XmlBeanFactory(new ClassPathResource("MyBean.xml"));
