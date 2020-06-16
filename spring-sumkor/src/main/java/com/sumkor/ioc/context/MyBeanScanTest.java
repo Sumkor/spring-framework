@@ -14,6 +14,11 @@ public class MyBeanScanTest {
 
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		/**
+		 * 父构造方法，默认扫描 @Component 注解
+		 * @see ClassPathScanningCandidateComponentProvider#registerDefaultFilters()
+		 */
+
 		context.scan("com.sumkor.ioc.bean");
 		/**
 		 * 判断是否存在 @Component 注解的类，若存在则注册到 beanFactory. (这里注册了 myBeanWithAnnotation，为 ScannedGenericBeanDefinition 实例)

@@ -77,6 +77,11 @@ public class MyBeanLifeTest {
 		 *
 		 * 3.2.4 执行 BeanPostProcessor.applyBeanPostProcessorsAfterInitialization 方法
 		 * @see AbstractAutowireCapableBeanFactory#applyBeanPostProcessorsAfterInitialization(java.lang.Object, java.lang.String)
+		 *
+		 * 4. 将 bean 实例存储到 BeanFactory
+		 * @see AbstractBeanFactory#doGetBean(java.lang.String, java.lang.Class, java.lang.Object[], boolean)
+		 * @see DefaultSingletonBeanRegistry#getSingleton(java.lang.String, org.springframework.beans.factory.ObjectFactory)
+		 * @see DefaultSingletonBeanRegistry#addSingleton(java.lang.String, java.lang.Object)
 		 */
 
 		MyBeanLife myBeanLife = (MyBeanLife) context.getBean("myBeanLife");
