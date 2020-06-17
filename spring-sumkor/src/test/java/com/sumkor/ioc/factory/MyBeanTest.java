@@ -19,6 +19,7 @@ public class MyBeanTest {
 	}
 
 	/**
+	 * 利用构造方法创建 bean 实例
 	 * @see SimpleInstantiationStrategy#instantiate(org.springframework.beans.factory.support.RootBeanDefinition, java.lang.String, org.springframework.beans.factory.BeanFactory)
 	 */
 	@Test

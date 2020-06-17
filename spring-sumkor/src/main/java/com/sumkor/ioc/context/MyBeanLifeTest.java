@@ -1,7 +1,7 @@
 package com.sumkor.ioc.context;
 
-import com.sumkor.ioc.bean.MyBeanLife;
-import com.sumkor.ioc.bean.MyBeanPostProcessor;
+import com.sumkor.ioc.bean.life.MyBeanLife;
+import com.sumkor.ioc.bean.life.MyBeanPostProcessor;
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.support.*;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
@@ -10,7 +10,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
- * bean生命周期
+ * 1. bean生命周期
  * https://www.cnblogs.com/javazhiyin/p/10905294.html
  *
  * @author Sumkor

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.context.support.AbstractApplicationContext;
 
 /**
- * bean注解扫描
+ * 2. bean注解扫描
  *
  * @author Sumkor
  * @since 2020/6/15
@@ -21,8 +21,10 @@ public class MyBeanScanTest {
 
 		context.scan("com.sumkor.ioc.bean");
 		/**
-		 * 判断是否存在 @Component 注解的类，若存在则注册到 beanFactory. (这里注册了 myBeanWithAnnotation，为 ScannedGenericBeanDefinition 实例)
+		 * 扫描 @Component 注解的类，并注册，入口
 		 * @see ClassPathBeanDefinitionScanner#doScan(java.lang.String...)
+		 * 扫描包路径下的文件，解析为 Resource 对象，判断是否存在 @Component 注解的类，若存在则注册到 beanFactory. (这里注册了 myBeanWithAnnotation，为 ScannedGenericBeanDefinition 实例)
+		 * @see ClassPathScanningCandidateComponentProvider#scanCandidateComponents(java.lang.String)
 		 * @see ClassPathScanningCandidateComponentProvider#isCandidateComponent(org.springframework.core.type.classreading.MetadataReader)
 		 */
 
