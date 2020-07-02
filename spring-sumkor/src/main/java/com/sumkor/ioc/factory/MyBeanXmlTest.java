@@ -28,11 +28,14 @@ public class MyBeanXmlTest {
 		myBean.sayHello();
 
 		/**
-		 * 将入参"MyBean.xml"经过以下解析，得到的还是"MyBean.xml"
+		 * 入口
+		 * @see ClassPathXmlApplicationContext#ClassPathXmlApplicationContext(java.lang.String[], boolean, org.springframework.context.ApplicationContext)
+		 *
+		 * 将入参"MyBean.xml"经过以下解析，得到的还是"MyBean.xml"，意义不明
 		 * @see AbstractRefreshableConfigApplicationContext#setConfigLocations(java.lang.String...)
 		 * @see PropertyPlaceholderHelper#parseStringValue(java.lang.String, org.springframework.util.PropertyPlaceholderHelper.PlaceholderResolver, java.util.Set)
 		 *
-		 * 执行
+		 * 执行，关键位置
 		 * @see AbstractApplicationContext#refresh()
 		 *
 		 * 其中：

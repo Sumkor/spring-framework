@@ -3,6 +3,7 @@ package com.sumkor.ioc.context;
 import com.sumkor.ioc.bean.MyBeanWithAnnotation;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 
 /**
  * 2. bean注解扫描
@@ -15,7 +16,11 @@ public class MyBeanScanTest {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		/**
-		 * 父构造方法，默认扫描 @Component 注解
+		 * 父构造方法中，创建 beanFactory
+		 * @see GenericApplicationContext#GenericApplicationContext()
+		 *
+		 * 默认扫描 @Component 注解
+		 * @see ClassPathBeanDefinitionScanner#ClassPathBeanDefinitionScanner(org.springframework.beans.factory.support.BeanDefinitionRegistry)
 		 * @see ClassPathScanningCandidateComponentProvider#registerDefaultFilters()
 		 */
 
@@ -30,23 +35,24 @@ public class MyBeanScanTest {
 
 		context.refresh();
 		/**
-		 * 1. 将 @Component 注解的类里面的 @Bean 方法，注册到 beanFactory，入口
+		 * 1. 执行 BeanFactoryPostProcessor: 将 @Component 注解的类里面的 @Bean 方法，注册到 beanFactory，入口
 		 * @see AbstractApplicationContext#invokeBeanFactoryPostProcessors(org.springframework.beans.factory.config.ConfigurableListableBeanFactory)
 		 * @see org.springframework.context.support.PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors(org.springframework.beans.factory.config.ConfigurableListableBeanFactory, java.util.List)
 		 * @see org.springframework.context.support.PostProcessorRegistrationDelegate#invokeBeanDefinitionRegistryPostProcessors(java.util.Collection, org.springframework.beans.factory.support.BeanDefinitionRegistry)
 		 *
-		 * 2. 从 beanFactory 中获取所有的 beanDefinition
+		 * 1.2 执行 BeanDefinitionRegistryPostProcessor: 从 beanFactory 中获取所有的 beanDefinition
+		 * @see ConfigurationClassPostProcessor#postProcessBeanDefinitionRegistry(org.springframework.beans.factory.support.BeanDefinitionRegistry)
 		 * @see ConfigurationClassPostProcessor#processConfigBeanDefinitions(org.springframework.beans.factory.support.BeanDefinitionRegistry)
 		 *
-		 * 2.1 校验 beanDefinition 对应的类是否使用了 @Configuration、@Component、@Import 等注解 {@link org.springframework.context.annotation.ConfigurationClassUtils#candidateIndicators}
+		 * 1.2.1 校验 beanDefinition 对应的类是否使用了 @Configuration、@Component、@Import 等注解 {@link org.springframework.context.annotation.ConfigurationClassUtils#candidateIndicators}
 		 * @see ConfigurationClassUtils#checkConfigurationClassCandidate(org.springframework.beans.factory.config.BeanDefinition, org.springframework.core.type.classreading.MetadataReaderFactory)
 		 *
-		 * 2.2 对符合上一步条件的 beanDefinition 进行解析，将 @Bean 注解的方法解析为 MethodMetadata 实例
+		 * 1.2.2 对符合上一步条件的 beanDefinition 进行解析，将 @Bean 注解的方法解析为 MethodMetadata 实例
 		 * @see ConfigurationClassParser#parse(java.util.Set)
 		 * @see ConfigurationClassParser#doProcessConfigurationClass(org.springframework.context.annotation.ConfigurationClass, org.springframework.context.annotation.ConfigurationClassParser.SourceClass, java.util.function.Predicate)
 		 * @see ConfigurationClassParser#retrieveBeanMethodMetadata(org.springframework.context.annotation.ConfigurationClassParser.SourceClass)
 		 *
-		 * 2.3 将 MethodMetadata 实例解析为 beanDefinition，即 ConfigurationClassBeanDefinitionReader$ConfigurationClassBeanDefinition 实例，并进行注册
+		 * 1.2.3 将 MethodMetadata 实例解析为 beanDefinition，即 ConfigurationClassBeanDefinitionReader$ConfigurationClassBeanDefinition 实例，并进行注册
 		 * @see ConfigurationClassBeanDefinitionReader#loadBeanDefinitions(java.util.Set)
 		 * @see ConfigurationClassBeanDefinitionReader#loadBeanDefinitionsForConfigurationClass(org.springframework.context.annotation.ConfigurationClass, org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.TrackedConditionEvaluator)
 		 * @see org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader#loadBeanDefinitionsForBeanMethod(org.springframework.context.annotation.BeanMethod)
