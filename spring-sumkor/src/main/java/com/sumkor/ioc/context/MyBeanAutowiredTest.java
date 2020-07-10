@@ -14,6 +14,10 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 /**
  * 3. 自动注入 循环依赖
  *
+ * 执行BeanA的构造方法 -> 曝光BeanA引用 ->
+ * 设置BeanA的属性(BeanB)开始 -> 执行BeanB的构造方法 -> 曝光BeanB引用 -> 设置BeanB的属性(BeanA)成功 -> 完成创建BeanB->
+ * 设置BeanA的属性(BeanB)结束 -> 完成创建BeanA
+ *
  * @author Sumkor
  * @since 2020/6/16
  */
