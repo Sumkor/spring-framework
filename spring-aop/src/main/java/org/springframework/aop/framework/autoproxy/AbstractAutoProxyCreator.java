@@ -236,8 +236,8 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	@Override
 	public Object getEarlyBeanReference(Object bean, String beanName) {
 		Object cacheKey = getCacheKey(bean.getClass(), beanName);
-		this.earlyProxyReferences.put(cacheKey, bean);
-		return wrapIfNecessary(bean, beanName, cacheKey);
+		this.earlyProxyReferences.put(cacheKey, bean);// 放入缓存。由于循环依赖时，需要提前曝光的是动态代理后的对象，因此需要提前执行动态代理
+		return wrapIfNecessary(bean, beanName, cacheKey);// 生成AOP动态代理的对象
 	}
 
 	@Override
@@ -295,8 +295,8 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	public Object postProcessAfterInitialization(@Nullable Object bean, String beanName) {
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
-			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
-				return wrapIfNecessary(bean, beanName, cacheKey);
+			if (this.earlyProxyReferences.remove(cacheKey) != bean) {// 从缓存中取，因为处理循环依赖的提前曝光动作中，已经执行过动态代理了。避免生成两个动态代理对象。
+				return wrapIfNecessary(bean, beanName, cacheKey);// 生成AOP动态代理的对象
 			}
 		}
 		return bean;
