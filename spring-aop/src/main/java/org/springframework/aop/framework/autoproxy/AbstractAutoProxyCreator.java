@@ -46,6 +46,7 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
+import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -236,8 +237,8 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	@Override
 	public Object getEarlyBeanReference(Object bean, String beanName) {
 		Object cacheKey = getCacheKey(bean.getClass(), beanName);
-		this.earlyProxyReferences.put(cacheKey, bean);// 放入缓存。由于循环依赖时，需要提前曝光的是动态代理后的对象，因此需要提前执行动态代理
-		return wrapIfNecessary(bean, beanName, cacheKey);// 生成AOP动态代理的对象
+		this.earlyProxyReferences.put(cacheKey, bean);// 这里用存储了提前进行AOP的bean。其中，key:beanName，value:动态代理之前的原始bean。由于循环依赖时，需要提前曝光的是动态代理后的对象，因此需要提前执行动态代理。
+		return wrapIfNecessary(bean, beanName, cacheKey);// 提前执行AOP，生成动态代理的对象。注意此时代理对象之中的原始对象，只执行了构造方法，其属性还未赋值。
 	}
 
 	@Override
@@ -295,11 +296,12 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	public Object postProcessAfterInitialization(@Nullable Object bean, String beanName) {
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
-			if (this.earlyProxyReferences.remove(cacheKey) != bean) {// 从缓存中取，因为处理循环依赖的提前曝光动作中，已经执行过动态代理了。避免生成两个动态代理对象。
-				return wrapIfNecessary(bean, beanName, cacheKey);// 生成AOP动态代理的对象
+			if (this.earlyProxyReferences.remove(cacheKey) != bean) {// 若缓存中已存在原始bean，说明在处理循环依赖的提前曝光动作中，已经执行过动态代理了。可以避免生成两个动态代理对象。
+				return wrapIfNecessary(bean, beanName, cacheKey);// 没有提前进行AOP，则在这里执行AOP，并返回生成动态代理的对象。
 			}
 		}
-		return bean;
+		return bean;// 若已经提前执行AOP，则返回原始对象。
+		/** 为什么返回原始对象呢？见{@link AbstractAutowireCapableBeanFactory#doCreateBean}之中对循环依赖的第二次处理 **/
 	}
 
 

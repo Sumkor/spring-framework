@@ -540,7 +540,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
-			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));/** 这里只是放入了ObjectFactory对象，并未执行lambda表达式，真正执行的地方是{@link DefaultSingletonBeanRegistry#getSingleton(java.lang.String, boolean)} **/
+			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
+			/**
+			 * 这里只是在singletonFactories缓存中放入了lambda表达式，并未执行该lambda表达式
+			 * 因为此时还不知道属性之中有没有循环依赖，所以并不需要提前执行AOP
+			 * 控制只有在循环依赖的时候，才通过{@link DefaultSingletonBeanRegistry#getSingleton(java.lang.String, boolean)}去执行lambda表达式
+			 * 执行lambda表达式的结果是：提前执行AOP，生成代理对象（没有AOP的时候则得到原始对象）
+			 */
 		}
 
 		// Initialize the bean instance.
@@ -560,7 +566,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (earlySingletonExposure) {// 第二次处理，防止对象被改变 造成的已创建对象中持有的对象和这个对象不一致
-			Object earlySingletonReference = getSingleton(beanName, false);
+			Object earlySingletonReference = getSingleton(beanName, false);// 若有AOP，这里得到的是代理对象
 			if (earlySingletonReference != null) {
 				if (exposedObject == bean) {
 					exposedObject = earlySingletonReference;
@@ -915,9 +921,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object exposedObject = bean;
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
-				if (bp instanceof SmartInstantiationAwareBeanPostProcessor) {// 处理循环依赖下的AOP
+				if (bp instanceof SmartInstantiationAwareBeanPostProcessor) {// AOP处理器
 					SmartInstantiationAwareBeanPostProcessor ibp = (SmartInstantiationAwareBeanPostProcessor) bp;
-					exposedObject = ibp.getEarlyBeanReference(exposedObject, beanName);
+					exposedObject = ibp.getEarlyBeanReference(exposedObject, beanName);// 生成AOP动态代理的对象
 				}
 			}
 		}
