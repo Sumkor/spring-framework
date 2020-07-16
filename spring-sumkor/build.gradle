@@ -14,11 +14,13 @@ dependencies {
     compile(project(":spring-context"))
     compile(project(":spring-beans"))
     compile(project(":spring-core"))
+    optional("org.aspectj:aspectjweaver")
 //    optional("org.junit.jupiter:junit-jupiter-api")
 //    optional("javax.annotation:javax.annotation-api")
 //    testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile(testFixtures(project(":spring-core")))
     testCompile("javax.annotation:javax.annotation-api")
+    testCompile("org.aspectj:aspectjweaver")
     testFixturesApi("org.junit.jupiter:junit-jupiter-api")
     testFixturesImplementation("org.assertj:assertj-core")
 
