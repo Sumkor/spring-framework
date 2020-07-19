@@ -1,7 +1,8 @@
 package com.sumkor.aop.context;
 
-import com.sumkor.aop.config.AppConfig;
+import com.sumkor.aop.config.AopConfig;
 import com.sumkor.aop.service.MyService;
+import com.sumkor.aop.service.MyServiceImpl;
 import com.sumkor.aop.service.MyServiceNoFace;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -10,10 +11,10 @@ import org.springframework.context.support.AbstractApplicationContext;
  * @author Sumkor
  * @since 2020/7/16
  */
-public class MyServiceTest {
+public class MyServiceAOPTest {
 
 	public static void main(String[] args) {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AopConfig.class);
 		/**
 		 * 总入口
 		 * @see AbstractApplicationContext#refresh()
@@ -32,8 +33,20 @@ public class MyServiceTest {
 		 *
 		 */
 
+		System.out.println("------------------------");
+
 		MyService myService = context.getBean(MyService.class);
 		myService.say();
+		System.out.println(myService instanceof MyServiceImpl);
+		/**
+		 * 使用jdk动态代理时，返回false
+		 * 使用cglib动态代理时，返回true
+		 *
+		 * jdk动态代理：bean extends Prosy implement MyService
+		 * cglib动态代理：bean extends MyServiceImpl implement MyService
+		 */
+
+		System.out.println("------------------------");
 
 		MyServiceNoFace myServiceNoFace = context.getBean(MyServiceNoFace.class);
 		myServiceNoFace.say();
