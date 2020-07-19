@@ -1129,7 +1129,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		if (candidateNames.length == 1) {
 			String beanName = candidateNames[0];
-			return new NamedBeanHolder<>(beanName, (T) getBean(beanName, requiredType.toClass(), args));
+			return new NamedBeanHolder<>(beanName, (T) getBean(beanName, requiredType.toClass(), args));// 根据beanName去获取bean实例
 		}
 		else if (candidateNames.length > 1) {
 			Map<String, Object> candidates = new LinkedHashMap<>(candidateNames.length);

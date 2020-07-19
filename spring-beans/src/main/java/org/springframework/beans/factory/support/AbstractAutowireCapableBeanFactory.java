@@ -447,7 +447,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			mbdToUse.setBeanClass(resolvedClass);
 		}
 
-		// Prepare method overrides.
+		// Prepare method overrides.// 处理lockup-method和replace-method配置
 		try {
 			mbdToUse.prepareMethodOverrides();
 		}
