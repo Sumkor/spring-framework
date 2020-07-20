@@ -8,4 +8,5 @@ public interface MyService {
 
 	void say();
 
+	void play();
 }

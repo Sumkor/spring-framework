@@ -6,6 +6,7 @@ import com.sumkor.aop.service.MyServiceImpl;
 import com.sumkor.aop.service.MyServiceNoFace;
 import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import org.springframework.aop.config.AopConfigUtils;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
 import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory;
 import org.springframework.beans.factory.support.AbstractBeanFactory;
@@ -46,7 +47,14 @@ public class MyServiceAOPTest {
 		 * 2.1 BeanPostProcessor.postProcessAfterInitialization之中进行代理，即执行{@link AnnotationAwareAspectJAutoProxyCreator}
 		 * @see AbstractAutowireCapableBeanFactory#applyBeanPostProcessorsAfterInitialization(java.lang.Object, java.lang.String)
 		 * @see AbstractAutoProxyCreator#postProcessAfterInitialization(java.lang.Object, java.lang.String)
+		 * @see AbstractAutoProxyCreator#wrapIfNecessary(java.lang.Object, java.lang.String, java.lang.Object)
+		 * @see AbstractAutoProxyCreator#createProxy(java.lang.Class, java.lang.String, java.lang.Object[], org.springframework.aop.TargetSource)
+		 * @see ProxyFactory#getProxy(java.lang.ClassLoader)
 		 *
+		 * A. JDK动态代理
+		 * @see org.springframework.aop.framework.JdkDynamicAopProxy#getProxy(java.lang.ClassLoader)
+		 * B. CGLIB动态代理
+		 * @see org.springframework.aop.framework.CglibAopProxy#getProxy(java.lang.ClassLoader)
 		 */
 
 		System.out.println("------------------------");
@@ -62,6 +70,7 @@ public class MyServiceAOPTest {
 		 * @see AbstractBeanFactory#doGetBean(java.lang.String, java.lang.Class, java.lang.Object[], boolean)
 		 */
 		myService.say();
+		myService.play();
 		System.out.println(myService instanceof MyServiceImpl);
 		/**
 		 * 使用jdk动态代理时，返回false

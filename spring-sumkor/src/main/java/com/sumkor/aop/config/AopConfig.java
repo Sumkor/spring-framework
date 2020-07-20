@@ -14,7 +14,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @Aspect
 @Configuration
 @ComponentScan("com.sumkor.aop")
-@EnableAspectJAutoProxy(proxyTargetClass = true)
+@EnableAspectJAutoProxy(proxyTargetClass = false)
 public class AopConfig {
 
 	/**
@@ -38,7 +38,11 @@ public class AopConfig {
 	public void pointCutTarget() {
 	}
 
-	@Before("pointCutTarget()")
+	@Pointcut("execution(* com.sumkor.aop.service..*play(..))")
+	public void pointCutMethod() {
+	}
+
+	@Before("pointCutMethod()")
 	public void before() {
 		System.out.println("before");
 	}

@@ -13,4 +13,9 @@ public class MyServiceImpl implements MyService {
 	public void say() {
 		System.out.println("hello 中文");
 	}
+
+	@Override
+	public void play() {
+		System.out.println("play 中文");
+	}
 }
