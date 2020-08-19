@@ -82,7 +82,7 @@ public class MyBeanLifeTest {
 		 * B.3 执行 PostConstruct 注解方法
 		 * @see InitDestroyAnnotationBeanPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)
 		 *
-		 * C. 执行 InitializingBean 类的方法，其中先执行 afterPropertiesSet，再执行 initMethod
+		 * C. 执行 InitializingBean 类的方法，其中先执行 afterPropertiesSet，再执行 initMethod(xml文件中配置了init-method)
 		 * @see AbstractAutowireCapableBeanFactory#invokeInitMethods(java.lang.String, java.lang.Object, org.springframework.beans.factory.support.RootBeanDefinition)
 		 *
 		 * D. 执行 BeanPostProcessor.applyBeanPostProcessorsAfterInitialization 方法
