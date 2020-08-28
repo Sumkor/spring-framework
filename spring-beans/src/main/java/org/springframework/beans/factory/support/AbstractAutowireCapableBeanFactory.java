@@ -568,8 +568,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (earlySingletonExposure) {// 第二次处理，防止对象被改变 造成的已创建对象中持有的对象和这个对象不一致
 			Object earlySingletonReference = getSingleton(beanName, false);// 若有AOP，这里得到的是代理对象
 			if (earlySingletonReference != null) {
-				if (exposedObject == bean) {
-					exposedObject = earlySingletonReference;
+				if (exposedObject == bean) {// 校验原始的bean，在经历了属性赋值populateBean、初始化initializeBean之后，有没有改变
+					exposedObject = earlySingletonReference;// 若有AOP，这里将exposedObject的值从原始对象赋值为代理对象
 				}
 				else if (!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)) {
 					String[] dependentBeans = getDependentBeans(beanName);

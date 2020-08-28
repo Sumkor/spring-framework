@@ -1,5 +1,6 @@
 package com.sumkor.ioc.context;
 
+import com.sumkor.ioc.bean.life.MyBeanFactoryPostProcessor;
 import com.sumkor.ioc.bean.life.MyBeanLife;
 import com.sumkor.ioc.bean.life.MyBeanPostProcessor;
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
@@ -12,6 +13,8 @@ import org.springframework.context.support.GenericApplicationContext;
 /**
  * 1. bean生命周期
  * https://www.cnblogs.com/javazhiyin/p/10905294.html
+ *
+ * class -> BeanDefinition -> BeanFactoryPostProcessor -> new Object -> 填充属性 -> Aware -> BeanPostProcessor/AOP -> 单例池
  *
  * @author Sumkor
  * @since 2020/5/14
@@ -32,9 +35,10 @@ public class MyBeanLifeTest {
 		 * @see BeanDefinitionReaderUtils#registerBeanDefinition(org.springframework.beans.factory.config.BeanDefinitionHolder, org.springframework.beans.factory.support.BeanDefinitionRegistry)
 		 */
 
+		context.addBeanFactoryPostProcessor(new MyBeanFactoryPostProcessor());
 		context.getBeanFactory().addBeanPostProcessor(new MyBeanPostProcessor());
 		/**
-		 * 添加自定的 BeanPostProcessor
+		 * 添加自定的 BeanFactoryPostProcessor 和 BeanPostProcessor
 		 */
 
 		context.refresh();
@@ -106,6 +110,8 @@ public class MyBeanLifeTest {
 
 		/**
 		 * 执行结果：
+		 *
+		 * MyBeanFactoryPostProcessor.postProcessBeanFactory
 		 *
 		 * MyBeanLife.Constructor
 		 *

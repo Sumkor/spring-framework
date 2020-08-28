@@ -170,11 +170,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Object singletonObject = this.singletonObjects.get(beanName);// 从单例池获取经过了完整生命周期的bean，此为第一级缓存
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {// 从单例池获取不到，且该bean正处于创建中
 			synchronized (this.singletonObjects) {
-				singletonObject = this.earlySingletonObjects.get(beanName);// 从第二级缓存获取AOP代理对象或原始对象
+				singletonObject = this.earlySingletonObjects.get(beanName);// 从第二级缓存获取AOP代理对象或原始对象（只有循环依赖时是原始对象，而有循环依赖和AOP时则是代理对象）
 				if (singletonObject == null && allowEarlyReference) {
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);// 从第三级缓存获取lambda表达式(由doCreateBean中为解决循环依赖而提前曝光时放入)
 					if (singletonFactory != null) {
-						singletonObject = singletonFactory.getObject();// 执行lambda表达式，生成AOP代理对象或原始对象。
+						singletonObject = singletonFactory.getObject();// 执行lambda表达式，生成AOP代理对象或原始对象
 						/** 即真正地执行{@link AbstractAutowireCapableBeanFactory#doCreateBean)}之中的{@link AbstractAutowireCapableBeanFactory#getEarlyBeanReference} **/
 						this.earlySingletonObjects.put(beanName, singletonObject);// 若从第三级缓存获取到了bean，则将第三级缓存升级为第二级缓存。保证AOP代理对象只会生成一次！！
 						this.singletonFactories.remove(beanName);

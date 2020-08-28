@@ -22,6 +22,15 @@ public class MyBeanLife implements BeanNameAware, BeanFactoryAware, ApplicationC
 		System.out.println("MyBeanLife.sayHello:哇哦");
 	}
 
+	/**
+	 * 获取当前对象在Spring中的bean name
+	 *
+	 * @param name the name of the bean in the factory.
+	 * Note that this name is the actual bean name used in the factory, which may
+	 * differ from the originally specified name: in particular for inner bean
+	 * names, the actual bean name might have been made unique through appending
+	 * "#..." suffixes. Use the {@link BeanFactoryUtils#originalBeanName(String)}
+	 */
 	@Override
 	public void setBeanName(String name) {
 		System.out.println("BeanNameAware.setBeanName");
