@@ -16,29 +16,19 @@
 
 package org.springframework.context.support;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
-import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.beans.factory.support.*;
 import org.springframework.core.OrderComparator;
 import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.lang.Nullable;
+
+import java.util.*;
 
 /**
  * Delegate for AbstractApplicationContext's post-processor handling.
@@ -86,7 +76,7 @@ final class PostProcessorRegistrationDelegate {
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
-				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
+				if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) { // 实现了PriorityOrdered接口的BeanPostProcessor属于于同一级别，都是先统一调用getBean()实例化后再被统一addBeanPostProcessor
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
@@ -99,7 +89,7 @@ final class PostProcessorRegistrationDelegate {
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
-				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) {
+				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) { // Ordered的优先级比PriorityOrdered的低。
 					currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
 					processedBeans.add(ppName);
 				}
@@ -308,6 +298,16 @@ final class PostProcessorRegistrationDelegate {
 	 * BeanPostProcessor that logs an info message when a bean is created during
 	 * BeanPostProcessor instantiation, i.e. when a bean is not eligible for
 	 * getting processed by all BeanPostProcessors.
+	 * <p>
+	 * BeanPostProcessorChecker是一个内部类，实现了BeanPostProcessor。它的作用就是在postProcessAfterInitialization里检查：
+	 * 作用在此Bean上的BeanPostProcessor够不够数，如果不够数，说明当前bean被提前加载了，其优先级比在此Bean上的部分BeanPostProcessor还高，此时会打印一条info日志。
+	 * 说明当前bean无法享受部分BeanPostProcessor的后置处理。
+	 * <p>
+	 * 高优先级的Bean能够作用于低优先级的，反之不成立。
+	 * 同优先级的Bean不能相互作用。
+	 * Bean的加载优先级可以通过实现PriorityOrdered、Ordered接口来实现。
+	 * <p>
+	 * https://cloud.tencent.com/developer/article/1497619
 	 */
 	private static final class BeanPostProcessorChecker implements BeanPostProcessor {
 
