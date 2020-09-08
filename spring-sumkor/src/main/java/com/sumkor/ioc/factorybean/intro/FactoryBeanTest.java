@@ -1,4 +1,4 @@
-package com.sumkor.ioc.factorybean;
+package com.sumkor.ioc.factorybean.intro;
 
 import com.sumkor.ioc.bean.MyBean;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
@@ -22,17 +22,27 @@ public class FactoryBeanTest {
 
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-		context.register(MyFactoryBean.class);
+		context.scan("com.sumkor.ioc.factorybean.intro");
 		context.refresh();
 
+		// 通过调用FactoryBean.getObject获取目标对象
 		MyFactoryBean myFactoryBean = context.getBean(MyFactoryBean.class);
 		MyBean myBean = myFactoryBean.getObject();
 		myBean.sayHello();
 
+		// 通过调用FactoryBean的beanName获取目标对象
 		Object bean01 = context.getBean("myFactoryBean");
 		System.out.println(bean01 instanceof MyBean);// 实际由Spring容器调用FactoryBean.getObject方法
+		Object bean02 = context.getBean("myFactoryBean");
+		System.out.println("bean01 = " + bean01);// com.sumkor.ioc.bean.MyBean@76b0bfab
+		System.out.println("bean02 = " + bean02);// com.sumkor.ioc.bean.MyBean@76b0bfab
 
-		Object bean02 = context.getBean("&myFactoryBean");
-		System.out.println(bean02 instanceof MyFactoryBean);
+		// 通过调用&FactoryBean的beanName获取FactoryBean对象
+		Object bean03 = context.getBean("&myFactoryBean");
+		System.out.println(bean03 instanceof MyFactoryBean);
+
+		// 目标对象可以通过@Autowired注入
+		MyFactoryBeanService factoryBeanService = context.getBean(MyFactoryBeanService.class);
+		factoryBeanService.sayHello();
 	}
 }

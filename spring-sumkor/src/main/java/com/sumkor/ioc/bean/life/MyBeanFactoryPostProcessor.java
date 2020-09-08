@@ -8,6 +8,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 /**
  * 当Spring将BeanFactory组建完成之后，使用后置处理器去操作BeanFactory
  * BeanFactory组建完成的标识，是Spring扫描完包路径之后，将扫描的的对象解析成BeanDefinition，并放置到了BeanFactory之中的beanDefinitionMap
+ * 即，这里只能从beanDefinitionMap之中取BeanDefinition，不能往里面注册
  *
  * @author Sumkor
  * @since 2020/8/26
