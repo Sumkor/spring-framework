@@ -1,5 +1,6 @@
 package com.sumkor.ioc.factorybean.mybatis;
 
+import com.sumkor.ioc.factorybean.mybatis.process.AppConfig;
 import com.sumkor.ioc.factorybean.mybatis.service.MyService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

@@ -15,14 +15,14 @@ public class MyService {
 	@Autowired
 	private UserMapper userMapper;
 
-//	@Autowired
-//	private OrderMapper orderMapper;
+	@Autowired
+	private OrderMapper orderMapper;
 
 	public void execute() {
 		System.out.println("execute userMapper.selectById");
 		userMapper.selectById(1L);
 
-//		System.out.println("execute orderMapper.selectById");
-//		orderMapper.selectById(1L);
+		System.out.println("execute orderMapper.selectById");
+		orderMapper.selectById(1L);
 	}
 }
