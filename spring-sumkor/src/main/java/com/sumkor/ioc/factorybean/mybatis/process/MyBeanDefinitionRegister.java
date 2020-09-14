@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 将 BeanDefinition 注册到 BeanFactory 之中的 BeanDefinitionMap 的方式：
@@ -25,6 +26,11 @@ public class MyBeanDefinitionRegister implements ImportBeanDefinitionRegistrar {
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry, BeanNameGenerator importBeanNameGenerator) {
+
+		// 可以改为扫描包路径，获取mappers
+		Map<String, Object> annotationAttributes = importingClassMetadata.getAnnotationAttributes(MyScan.class.getName());
+		Object value = annotationAttributes.get("value");
+		System.out.println("value = " + value);
 
 		List<Class<?>> mappers = new ArrayList<>();
 		mappers.add(UserMapper.class);
