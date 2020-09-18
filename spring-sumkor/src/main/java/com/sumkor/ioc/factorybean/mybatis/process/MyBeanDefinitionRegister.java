@@ -15,9 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 将 BeanDefinition 注册到 BeanFactory 之中的 BeanDefinitionMap 的方式：
- * 1. ComponentScan 扫描，生成 BeanDefinition 并注册
- * 2. Import 导入，生成 BeanDefinition 并注册
+ * 将 BeanDefinition 注册到 BeanFactory.BeanDefinitionMap 的几种方式：
+ * 1. ComponentScan 扫描 Bean，生成 BeanDefinition 并注册
+ * 2. @Import 导入，实现 ImportBeanDefinitionRegistrar 接口，生成 BeanDefinition 并注册
+ * 3. 实现 BeanDefinitionRegistryPostProcessor 接口，生成 BeanDefinition 并注册
  *
  * @author Sumkor
  * @since 2020/9/14
@@ -30,7 +31,7 @@ public class MyBeanDefinitionRegister implements ImportBeanDefinitionRegistrar {
 		// 可以改为扫描包路径，获取mappers
 		Map<String, Object> annotationAttributes = importingClassMetadata.getAnnotationAttributes(MyScan.class.getName());
 		Object value = annotationAttributes.get("value");
-		System.out.println("value = " + value);
+		System.out.println("value = " + value); // com.sumkor.ioc.factorybean.mybatis.mapper
 
 		List<Class<?>> mappers = new ArrayList<>();
 		mappers.add(UserMapper.class);
