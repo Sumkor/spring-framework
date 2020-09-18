@@ -540,7 +540,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
-			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
+			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));// 往第三级缓存singletonFactories中放入lambda表达式
 			/**
 			 * 这里只是在singletonFactories缓存中放入了lambda表达式，并未执行该lambda表达式
 			 * 因为此时还不知道属性之中有没有循环依赖，所以并不需要提前执行AOP
