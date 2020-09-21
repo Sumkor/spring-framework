@@ -65,7 +65,7 @@ public class FactoryBeanTest {
 
 		// ----------------------------------------------------------------------
 
-		// 目标对象可以通过@Autowired注入
+		// 目标对象可以通过@Autowired注入：优先用byType，而后是byName https://blog.csdn.net/yangjiachang1203/article/details/52128830
 		MyFactoryBeanService factoryBeanService = context.getBean(MyFactoryBeanService.class);
 		factoryBeanService.sayHello();
 

@@ -1009,7 +1009,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
-				processedRequest = checkMultipart(request);
+				processedRequest = checkMultipart(request);// 检查请求中是否携带文件（二进制）
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
