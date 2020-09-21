@@ -63,13 +63,39 @@ public class FactoryBeanTest {
 		Object bean03 = context.getBean("&myFactoryBean");
 		System.out.println(bean03 instanceof MyFactoryBean);
 
+		// ----------------------------------------------------------------------
+
 		// 目标对象可以通过@Autowired注入
 		MyFactoryBeanService factoryBeanService = context.getBean(MyFactoryBeanService.class);
 		factoryBeanService.sayHello();
+
+		// ----------------------------------------------------------------------
 
 		// 直接通过调用FactoryBean.getObject获取目标对象
 		MyFactoryBean myFactoryBean = context.getBean(MyFactoryBean.class);
 		MyBean myBean = myFactoryBean.getObject();
 		myBean.sayHello();
+
+		// 直接通过MyBean类获取目标对象
+		MyBean myBean02 = context.getBean(MyBean.class);
+		myBean02.sayHello();
+		/**
+		 * 根据 BeanType 获取 bean 实例
+		 * {@link DefaultListableBeanFactory#resolveNamedBean(org.springframework.core.ResolvableType, java.lang.Object[], boolean)}
+		 *
+		 * 1.1 根据 BeanType 获取 beanName
+		 * {@link DefaultListableBeanFactory#getBeanNamesForType(org.springframework.core.ResolvableType, boolean, boolean)}
+		 * {@link DefaultListableBeanFactory#getBeanNamesForType(java.lang.Class, boolean, boolean)}
+		 *
+		 * 遍历所有的 beanDefinitionNames(beanName 集合)，判断 beanName 与 beanType 是否符合
+		 * {@link DefaultListableBeanFactory#doGetBeanNamesForType(org.springframework.core.ResolvableType, boolean, boolean)}
+		 *
+		 * 根据 beanName 'myFactoryBean' 获取到 myFactoryBean 实例，调用 FactoryBean.getObject 获得 MyBean 类型，判断类型是否符合
+		 * {@link AbstractBeanFactory#isTypeMatch(java.lang.String, org.springframework.core.ResolvableType, boolean)}
+		 * {@link FactoryBeanRegistrySupport#getTypeForFactoryBean(org.springframework.beans.factory.FactoryBean)}
+		 *
+		 * 1.2 根据获取到的 beanName 'myFactoryBean'，从单例池中获取 Bean 实例
+		 * {@link AbstractBeanFactory#doGetBean(java.lang.String, java.lang.Class, java.lang.Object[], boolean)}
+		 */
 	}
 }
