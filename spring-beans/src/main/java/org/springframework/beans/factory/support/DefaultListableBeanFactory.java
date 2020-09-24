@@ -1224,7 +1224,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				return multipleBeans;
 			}
 
-			Map<String, Object> matchingBeans = findAutowireCandidates(beanName, type, descriptor);// 找到可供注入的候选 bean
+			Map<String, Object> matchingBeans = findAutowireCandidates(beanName, type, descriptor);// 找到可供注入的候选bean集合 Map<key:beanName,value:beanType>
 			if (matchingBeans.isEmpty()) {
 				if (isRequired(descriptor)) {
 					raiseNoMatchingBeanFound(type, descriptor.getResolvableType(), descriptor);
@@ -1253,15 +1253,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			else {
 				// We have exactly one match.
 				Map.Entry<String, Object> entry = matchingBeans.entrySet().iterator().next();
-				autowiredBeanName = entry.getKey();
-				instanceCandidate = entry.getValue();
+				autowiredBeanName = entry.getKey();// beanName
+				instanceCandidate = entry.getValue();// beanType
 			}
 
 			if (autowiredBeanNames != null) {
 				autowiredBeanNames.add(autowiredBeanName);
 			}
 			if (instanceCandidate instanceof Class) {
-				instanceCandidate = descriptor.resolveCandidate(autowiredBeanName, type, this);// 获取候选 bean 的实例，若获取不到则创建
+				instanceCandidate = descriptor.resolveCandidate(autowiredBeanName, type, this);// 根据 beanName、beanType 获取候选 bean 的实例，若获取不到则创建
 			}
 			Object result = instanceCandidate;
 			if (result instanceof NullBean) {
@@ -1443,7 +1443,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 		for (String candidate : candidateNames) {
 			if (!isSelfReference(beanName, candidate) && isAutowireCandidate(candidate, descriptor)) {
-				addCandidateEntry(result, candidate, descriptor, requiredType);
+				addCandidateEntry(result, candidate, descriptor, requiredType);// 构造需要注入的候选bean集合 Map<key:beanName,value:beanType>
 			}
 		}
 		if (result.isEmpty()) {

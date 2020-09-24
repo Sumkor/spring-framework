@@ -3,9 +3,12 @@ package com.sumkor.ioc.context;
 import com.sumkor.ioc.bean.circle.MyBeanA;
 import com.sumkor.ioc.bean.circle.MyBeanB;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
+import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.annotation.InjectionMetadata;
 import org.springframework.beans.factory.config.DependencyDescriptor;
+import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
 import org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory;
+import org.springframework.beans.factory.support.AbstractBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -45,37 +48,74 @@ public class MyBeanAutowiredTest {
 		 * @see AutowiredAnnotationBeanPostProcessor#buildAutowiringMetadata(java.lang.Class)
 		 * 最后将结果存在 {@link AutowiredAnnotationBeanPostProcessor#injectionMetadataCache} 之中：key 为 MyBeanA，value 为 InjectionMetadata 对象
 		 *
-		 * 1.2 提前暴露 MyBeanA 引用，存储在 {@link DefaultSingletonBeanRegistry#singletonFactories} 和 {@link DefaultSingletonBeanRegistry#registeredSingletons}
+		 * 1.2 提前暴露 MyBeanA，存储在第三级缓存 {@link DefaultSingletonBeanRegistry#singletonFactories} 和 {@link DefaultSingletonBeanRegistry#registeredSingletons}
 		 * @see DefaultSingletonBeanRegistry#addSingletonFactory(java.lang.String, org.springframework.beans.factory.ObjectFactory)
 		 *
 		 * 1.3 设置 MyBeanA 的属性
 		 * @see AbstractAutowireCapableBeanFactory#populateBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, org.springframework.beans.BeanWrapper)
-		 *
-		 * 从缓存 {@link AutowiredAnnotationBeanPostProcessor#injectionMetadataCache} 中取得 InjectionMetadata 对象，为 MyBeanA 的属性注入 MyBeanB
 		 * @see AutowiredAnnotationBeanPostProcessor#postProcessProperties(org.springframework.beans.PropertyValues, java.lang.Object, java.lang.String)
+		 *
+		 *
+		 * 1.3.1 从 injectionMetadataCache 之中取的 InjectionMetadata 对象，表明 MyBeanA 需要注入 MyBeanB
+		 * @see AutowiredAnnotationBeanPostProcessor#findAutowiringMetadata(java.lang.String, java.lang.Class, org.springframework.beans.PropertyValues)
+		 *
+		 * 1.3.2 对 InjectionMetadata 对象执行注入操作：得到所需要注入的 MyBeanB 对象实例，将该实例注入 MyBeanA 的成员变量中
 		 * @see InjectionMetadata#inject(java.lang.Object, java.lang.String, org.springframework.beans.PropertyValues)
 		 * @see AutowiredAnnotationBeanPostProcessor.AutowiredFieldElement#inject(java.lang.Object, java.lang.String, org.springframework.beans.PropertyValues)
 		 *
-		 * 执行依赖注入
+		 * 1.3.2.1 得到所需要注入的 MyBeanB 对象实例
 		 * @see DefaultListableBeanFactory#resolveDependency(org.springframework.beans.factory.config.DependencyDescriptor, java.lang.String, java.util.Set, org.springframework.beans.TypeConverter)
 		 * @see DefaultListableBeanFactory#doResolveDependency(org.springframework.beans.factory.config.DependencyDescriptor, java.lang.String, java.util.Set, org.springframework.beans.TypeConverter)
 		 *
-		 * 1.3.1 找到可以注入的 bean：MyBeanB，但是 MyBeanB 未实例化，需要先创建
+		 * A. 根据所依赖的 MyBeanB.class 类型，找到候选 map，其 key 为 beanName:'myBeanB'，其 value 为 beanType:MyBeanB.class
 		 * @see DefaultListableBeanFactory#findAutowireCandidates(java.lang.String, java.lang.Class, org.springframework.beans.factory.config.DependencyDescriptor)
 		 *
-		 * 1.3.2 创建 MyBeanB（整体流程与创建 MyBeanA 一致）
-		 * @see DependencyDescriptor#resolveCandidate(java.lang.String, java.lang.Class, org.springframework.beans.factory.BeanFactory)
-		 * @see AbstractAutowireCapableBeanFactory#doCreateBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Object[])
-		 * 将 MyBeanB 存储在 {@link AutowiredAnnotationBeanPostProcessor#injectionMetadataCache} 之中
-		 * 设置 MyBeanB 的属性，找到可供注入的 bean：MyBeanA，这里可以直接从 BeanFactory 中取得 MyBeanA 实例
-		 * @see AutowiredAnnotationBeanPostProcessor#postProcessProperties(org.springframework.beans.PropertyValues, java.lang.Object, java.lang.String)
-		 * @see DefaultListableBeanFactory#doResolveDependency(org.springframework.beans.factory.config.DependencyDescriptor, java.lang.String, java.util.Set, org.springframework.beans.TypeConverter)
-		 * 最后，执行属性赋值
-		 * @see AutowiredAnnotationBeanPostProcessor.AutowiredFieldElement#inject(java.lang.Object, java.lang.String, org.springframework.beans.PropertyValues)
-		 * 注意，对 MyBeanB 循环依赖 earlySingletonExposure 二次处理，是空处理
+		 * 其中，构造候选 map，需要根据 beanName 获取 beanType
+		 * @see DefaultListableBeanFactory#addCandidateEntry(java.util.Map, java.lang.String, org.springframework.beans.factory.config.DependencyDescriptor, java.lang.Class)
+		 * 首先从单例池中获取 MyBeanB 实例，但是获取不到，转而从 BeanFactory 中获取 BeanDefinition，依旧获取不到
+		 * @see AbstractBeanFactory#getType(java.lang.String)
+		 * 通过预测大法，从 RootBeanDefinition 拿到了 beanType:MyBeanB.class
+		 * @see AbstractAutowireCapableBeanFactory#predictBeanType(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Class[])
 		 *
-		 * 1.3.3 完成实例化 MyBeanB 之后，为 MyBeanA 的属性赋值
+		 * B. 拿到了集合 Map<key:'myBeanB',value:MyBeanB.class> 之后，根据 beanName、beanType 获取 bean 的实例
+		 * @see DependencyDescriptor#resolveCandidate(java.lang.String, java.lang.Class, org.springframework.beans.factory.BeanFactory)
+		 *
+		 * B.1 根据 beanName'myBeanB' 获取 MyBeanB 实例，实际是获取不到的，需要进行创建（整体流程与创建 MyBeanA 一致）
+		 * @see AbstractBeanFactory#doGetBean(java.lang.String, java.lang.Class, java.lang.Object[], boolean)
+		 *
+		 * B.2 这里只需要关注 MyBeanB 的创建过程中，如何注入 MyBeanA
+		 * @see AbstractAutowireCapableBeanFactory#populateBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, org.springframework.beans.BeanWrapper)
+		 * @see AutowiredAnnotationBeanPostProcessor#postProcessProperties(org.springframework.beans.PropertyValues, java.lang.Object, java.lang.String)
 		 * @see AutowiredAnnotationBeanPostProcessor.AutowiredFieldElement#inject(java.lang.Object, java.lang.String, org.springframework.beans.PropertyValues)
+		 * @see DefaultListableBeanFactory#doResolveDependency(org.springframework.beans.factory.config.DependencyDescriptor, java.lang.String, java.util.Set, org.springframework.beans.TypeConverter)
+		 *
+		 * 这里获取集合 Map<key:'myBeanA',value:MyBeanA.class>
+		 * 在单例池中获取不到 MyBeanA 实例，因为用的是 getSingleton(beanName, false) 只从第一、二级缓存获取！！！
+		 * 只能同样根据预测大法，由 beanName 获取 beanType
+		 * @see AbstractBeanFactory#getType(java.lang.String, boolean)
+		 *
+		 * 尝试根据 beanName、beanType 来获取 bean 实例
+		 * @see AbstractBeanFactory#doGetBean(java.lang.String, java.lang.Class, java.lang.Object[], boolean)
+		 * 在单例池中获取到了 MyBeanA 实例，因为用的是 getSingleton(beanName, true) 从第三级缓存获取到了！！！
+		 * @see DefaultSingletonBeanRegistry#getSingleton(java.lang.String, boolean)
+		 *
+		 * 执行 MyBeanA 提前曝光的 lambda，得到 myBeanA 实例，此时该实例的属性是空的
+		 * @see AbstractAutowireCapableBeanFactory#getEarlyBeanReference(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Object)
+		 *
+		 * 最后将 MyBeanA 注入 MyBeanB 的属性之中，并将 MyBeanB 放入单例池
+		 *
+		 * C. 返回得到的 MyBeanB 实例
+		 *
+		 * 1.3.2.2 将 MyBeanB 实例注入 MyBeanA 的属性之中
+		 * field.set(bean, value);
+		 *
+		 *
+		 * 1.4 初始化 MyBeanA
+		 * @see AbstractAutowireCapableBeanFactory#initializeBean(java.lang.String, java.lang.Object, org.springframework.beans.factory.support.RootBeanDefinition)
+		 * 关注这里对 Autowired 等相关 BeanPostProcessor 的执行逻辑，其实都是空操作
+		 * CommonAnnotationBeanPostProcessor -> {@link InitDestroyAnnotationBeanPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)}
+		 * AutowiredAnnotationBeanPostProcessor -> {@link InstantiationAwareBeanPostProcessorAdapter#postProcessBeforeInitialization(java.lang.Object, java.lang.String)}
+		 *
 		 *
 		 * 1.4 二次处理循环依赖，检查 MyBeanA 在设置完属性之后，是否发生改变
 		 * @see AbstractAutowireCapableBeanFactory#doCreateBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Object[])

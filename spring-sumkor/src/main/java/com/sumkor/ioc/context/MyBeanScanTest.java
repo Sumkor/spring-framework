@@ -1,12 +1,14 @@
 package com.sumkor.ioc.context;
 
-import com.sumkor.ioc.bean.MyBeanWithAnnotation;
+import com.sumkor.ioc.bean.scan.MyBeanWithAnnotation;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
  * 2. bean注解扫描
+ * <p>
+ * 解析配置类下的@Bean
  *
  * @author Sumkor
  * @since 2020/6/15
@@ -24,7 +26,7 @@ public class MyBeanScanTest {
 		 * @see ClassPathScanningCandidateComponentProvider#registerDefaultFilters()
 		 */
 
-		context.scan("com.sumkor.ioc.bean");
+		context.scan("com.sumkor.ioc.bean.scan");
 		/**
 		 * 扫描 @Component 注解的类，并注册，入口
 		 * @see ClassPathBeanDefinitionScanner#doScan(java.lang.String...)
@@ -40,7 +42,7 @@ public class MyBeanScanTest {
 		 * @see org.springframework.context.support.PostProcessorRegistrationDelegate#invokeBeanFactoryPostProcessors(org.springframework.beans.factory.config.ConfigurableListableBeanFactory, java.util.List)
 		 * @see org.springframework.context.support.PostProcessorRegistrationDelegate#invokeBeanDefinitionRegistryPostProcessors(java.util.Collection, org.springframework.beans.factory.support.BeanDefinitionRegistry)
 		 *
-		 * 1.2 执行 BeanDefinitionRegistryPostProcessor: 从 beanFactory 中获取所有的 beanDefinition
+		 * 1.2 执行 ConfigurationClassPostProcessor: 从 beanFactory 中获取 @Component 等修饰的配置类，解析其中的 @Bean 注解，解析为 beanDefinition 进行注册
 		 * @see ConfigurationClassPostProcessor#postProcessBeanDefinitionRegistry(org.springframework.beans.factory.support.BeanDefinitionRegistry)
 		 * @see ConfigurationClassPostProcessor#processConfigBeanDefinitions(org.springframework.beans.factory.support.BeanDefinitionRegistry)
 		 *

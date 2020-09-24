@@ -1,4 +1,4 @@
-package com.sumkor.ioc.bean;
+package com.sumkor.ioc.bean.scan;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
