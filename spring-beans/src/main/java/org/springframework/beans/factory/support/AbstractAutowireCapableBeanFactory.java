@@ -521,7 +521,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
-					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);// 依赖了其他 bean，则将其缓存为 InjectionMetadata 对象
+					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);// 依赖了其他 bean，则将所依赖 bean 缓存为 InjectionMetadata 对象
 				}
 				catch (Throwable ex) {
 					throw new BeanCreationException(mbd.getResourceDescription(), beanName,

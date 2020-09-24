@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @ComponentScan("com.sumkor.ioc.factorybean.mybatis")
-@Import(MyBeanDefinitionRegister.class)
+@Import(MyImportBeanDefinitionRegistrar.class)
 @MyScan("com.sumkor.ioc.factorybean.mybatis.mapper")
 public class AppConfig {
 }

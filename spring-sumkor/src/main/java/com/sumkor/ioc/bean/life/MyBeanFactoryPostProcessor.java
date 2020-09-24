@@ -1,14 +1,17 @@
 package com.sumkor.ioc.bean.life;
 
+import com.sumkor.ioc.factorybean.mybatis.process.MyImportBeanDefinitionRegistrar;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 /**
- * 当Spring将BeanFactory组建完成之后，使用后置处理器去操作BeanFactory
- * BeanFactory组建完成的标识，是Spring扫描完包路径之后，将扫描的的对象解析成BeanDefinition，并放置到了BeanFactory之中的beanDefinitionMap
- * 即，这里只能从beanDefinitionMap之中取BeanDefinition，不能往里面注册
+ * 当 Spring 将 BeanFactory 组建完成之后，使用后置处理器去操作 BeanFactory
+ * BeanFactory 组建完成的标识，是 Spring 扫描完包路径之后，将扫描的的对象解析成 BeanDefinition，并放置到了 BeanFactory 之中的 beanDefinitionMap
+ * <p>
+ * 另外，这里只能从 beanDefinitionMap 之中取 BeanDefinition，不能往里面注册
+ * 如何注册自定的 BeanDefinition，见 {@link MyImportBeanDefinitionRegistrar}
  *
  * @author Sumkor
  * @since 2020/8/26

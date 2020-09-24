@@ -23,7 +23,7 @@ import java.util.Map;
  * @author Sumkor
  * @since 2020/9/14
  */
-public class MyBeanDefinitionRegister implements ImportBeanDefinitionRegistrar {
+public class MyImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
 
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry, BeanNameGenerator importBeanNameGenerator) {
