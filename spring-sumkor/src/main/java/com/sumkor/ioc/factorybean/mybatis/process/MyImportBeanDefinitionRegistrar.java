@@ -41,7 +41,7 @@ public class MyImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegi
 			BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition();
 			AbstractBeanDefinition beanDefinition = beanDefinitionBuilder.getBeanDefinition();
 			beanDefinition.setBeanClass(MyFactoryBean.class);
-			beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(mapper);
+			beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(mapper);// MyFactoryBean构造函数入参赋值
 			registry.registerBeanDefinition(mapper.getSimpleName(), beanDefinition);
 		}
 	}

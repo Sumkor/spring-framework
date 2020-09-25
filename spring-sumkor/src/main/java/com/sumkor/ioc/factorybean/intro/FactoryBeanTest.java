@@ -4,8 +4,10 @@ import com.sumkor.ioc.bean.MyBean;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.beans.factory.support.AbstractBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
 import org.springframework.beans.factory.support.FactoryBeanRegistrySupport;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.util.Assert;
 
 /**
  * Spring FactoryBean和BeanFactory 区别
@@ -52,6 +54,10 @@ public class FactoryBeanTest {
 		 * {@link FactoryBeanRegistrySupport#getObjectFromFactoryBean(org.springframework.beans.factory.FactoryBean, java.lang.String, boolean)}
 		 * {@link FactoryBeanRegistrySupport#doGetObjectFromFactoryBean(org.springframework.beans.factory.FactoryBean, java.lang.String)}
 		 *
+		 *
+		 * 注意！！！
+		 * MyFactoryBean 实例存储在 {@link DefaultSingletonBeanRegistry#singletonObjects} 单例池中，key 为 beanName 'myFactoryBean'
+		 * MyBean 实例不会存储在单例池，存储在 {@link FactoryBeanRegistrySupport#factoryBeanObjectCache} 缓存中，key 为 beanName 'myFactoryBean'
 		 */
 
         // 单例
@@ -65,20 +71,23 @@ public class FactoryBeanTest {
 
 		// ----------------------------------------------------------------------
 
-		// 目标对象可以通过@Autowired注入：优先用byType，而后是byName https://blog.csdn.net/yangjiachang1203/article/details/52128830
-		MyFactoryBeanService factoryBeanService = context.getBean(MyFactoryBeanService.class);
-		factoryBeanService.sayHello();
+//		// 目标对象可以通过@Autowired注入：优先用byType，而后是byName https://blog.csdn.net/yangjiachang1203/article/details/52128830
+//		MyFactoryBeanService factoryBeanService = context.getBean(MyFactoryBeanService.class);
+//		factoryBeanService.sayHello();
 
 		// ----------------------------------------------------------------------
 
-		// 直接通过调用FactoryBean.getObject获取目标对象
+		// 直接通过调用FactoryBean.getObject获取目标对象。返回的是新创建的对象，不是缓存在 factoryBeanObjectCache 中的单例
 		MyFactoryBean myFactoryBean = context.getBean(MyFactoryBean.class);
-		MyBean myBean = myFactoryBean.getObject();
-		myBean.sayHello();
+		MyBean myBean01 = myFactoryBean.getObject();
+		Assert.notNull(myBean01, "myFactoryBean.getObject not null");
+		myBean01.sayHello();
+		System.out.println("myBean01 = " + myBean01);// com.sumkor.ioc.bean.MyBean@75881071
 
 		// 直接通过MyBean类获取目标对象
 		MyBean myBean02 = context.getBean(MyBean.class);
 		myBean02.sayHello();
+		System.out.println("myBean02 = " + myBean02);// com.sumkor.ioc.bean.MyBean@76b0bfab
 		/**
 		 * 根据 BeanType 获取 bean 实例
 		 * {@link DefaultListableBeanFactory#resolveNamedBean(org.springframework.core.ResolvableType, java.lang.Object[], boolean)}
@@ -90,7 +99,7 @@ public class FactoryBeanTest {
 		 * 遍历所有的 beanDefinitionNames(beanName 集合)，判断 beanName 与 beanType 是否符合
 		 * {@link DefaultListableBeanFactory#doGetBeanNamesForType(org.springframework.core.ResolvableType, boolean, boolean)}
 		 *
-		 * 根据 beanName 'myFactoryBean' 获取到 myFactoryBean 实例，调用 FactoryBean.getObject 获得 MyBean 类型，判断类型是否符合
+		 * 根据 beanName 'myFactoryBean' 获取到 myFactoryBean 实例，调用 FactoryBean.getObject 获得 MyBean 类型，用于判断类型是否符合
 		 * {@link AbstractBeanFactory#isTypeMatch(java.lang.String, org.springframework.core.ResolvableType, boolean)}
 		 * {@link FactoryBeanRegistrySupport#getTypeForFactoryBean(org.springframework.beans.factory.FactoryBean)}
 		 *
