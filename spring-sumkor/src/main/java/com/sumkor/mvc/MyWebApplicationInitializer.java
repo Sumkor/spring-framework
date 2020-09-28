@@ -10,9 +10,6 @@ import javax.servlet.ServletRegistration;
 
 
 /**
- * 参考
- * https://blog.csdn.net/sonycong/article/details/91891841
- *
  * @author Sumkor
  * @since 2020/9/25
  */
@@ -28,8 +25,8 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 
 		// Create and register the DispatcherServlet
 		DispatcherServlet servlet = new DispatcherServlet(context);
-		ServletRegistration.Dynamic registration = servletContext.addServlet("app", servlet);
+		ServletRegistration.Dynamic registration = servletContext.addServlet("app", servlet); // 注册servlet实例，设置servletName
 		registration.setLoadOnStartup(1);
-		registration.addMapping("/app/*");
+		registration.addMapping("/app/*"); // 类似web.xml中的servlet-mapping标签，将匹配url的请求映射到servlet上
 	}
 }
