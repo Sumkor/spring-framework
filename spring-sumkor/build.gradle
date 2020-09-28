@@ -14,16 +14,28 @@ dependencies {
     compile(project(":spring-context"))
     compile(project(":spring-beans"))
     compile(project(":spring-core"))
+    compile(project(":spring-web"))
+    compile(project(":spring-webmvc"))
+
+    compile 'org.apache.tomcat.embed:tomcat-embed-core:9.0.34'
+    compile 'org.apache.tomcat.embed:tomcat-embed-el:9.0.34'
+    compile 'org.apache.tomcat.embed:tomcat-embed-jasper:9.0.34'
+
+    // aop
     optional("org.aspectj:aspectjweaver")
-//    optional("org.junit.jupiter:junit-jupiter-api")
-//    optional("javax.annotation:javax.annotation-api")
-//    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // servlet
+//    optional("javax.servlet:javax.servlet-api:3.1.0")
+//    optional("javax.servlet.jsp:javax.servlet.jsp-api")
+
     testCompile(testFixtures(project(":spring-core")))
     testCompile("javax.annotation:javax.annotation-api")
     testCompile("org.aspectj:aspectjweaver")
     testFixturesApi("org.junit.jupiter:junit-jupiter-api")
     testFixturesImplementation("org.assertj:assertj-core")
-
+//    optional("org.junit.jupiter:junit-jupiter-api")
+//    optional("javax.annotation:javax.annotation-api")
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+//
 //    // 支持Junit Jupiter
 //    testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.0")
 //    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.0")
