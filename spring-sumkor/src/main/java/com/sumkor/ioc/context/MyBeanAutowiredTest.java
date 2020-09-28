@@ -67,7 +67,7 @@ public class MyBeanAutowiredTest {
 		 * @see DefaultListableBeanFactory#resolveDependency(org.springframework.beans.factory.config.DependencyDescriptor, java.lang.String, java.util.Set, org.springframework.beans.TypeConverter)
 		 * @see DefaultListableBeanFactory#doResolveDependency(org.springframework.beans.factory.config.DependencyDescriptor, java.lang.String, java.util.Set, org.springframework.beans.TypeConverter)
 		 *
-		 * A. 根据所依赖的 MyBeanB.class 类型，找到候选 map，其 key 为 beanName:'myBeanB'，其 value 为 beanType:MyBeanB.class
+		 * A. 【入参】根据 beanName:'myBeanA' 所依赖的 MyBeanB.class 类型，【出参】找到候选 map，其 key 为 beanName:'myBeanB'，其 value 为 beanType:MyBeanB.class
 		 * @see DefaultListableBeanFactory#findAutowireCandidates(java.lang.String, java.lang.Class, org.springframework.beans.factory.config.DependencyDescriptor)
 		 *
 		 * 其中，构造候选 map，需要根据 beanName 获取 beanType
@@ -77,13 +77,16 @@ public class MyBeanAutowiredTest {
 		 * 通过预测大法，从 RootBeanDefinition 拿到了 beanType:MyBeanB.class
 		 * @see AbstractAutowireCapableBeanFactory#predictBeanType(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Class[])
 		 *
-		 * B. 拿到了集合 Map<key:'myBeanB',value:MyBeanB.class> 之后，根据 beanName、beanType 获取 bean 的实例
+		 * B. 拿到了候选 Map 之后，从多个候选 beanName 中，找到符合的 beanName
+		 * @see DefaultListableBeanFactory#determineAutowireCandidate(java.util.Map, org.springframework.beans.factory.config.DependencyDescriptor)
+		 *
+		 * C. 根据 beanName 获取 bean 的实例
 		 * @see DependencyDescriptor#resolveCandidate(java.lang.String, java.lang.Class, org.springframework.beans.factory.BeanFactory)
 		 *
-		 * B.1 根据 beanName'myBeanB' 获取 MyBeanB 实例，实际是获取不到的，需要进行创建（整体流程与创建 MyBeanA 一致）
+		 * C.1 根据 beanName'myBeanB' 获取 MyBeanB 实例，实际是获取不到的，需要进行创建（整体流程与创建 MyBeanA 一致）
 		 * @see AbstractBeanFactory#doGetBean(java.lang.String, java.lang.Class, java.lang.Object[], boolean)
 		 *
-		 * B.2 这里只需要关注 MyBeanB 的创建过程中，如何注入 MyBeanA
+		 * C.2 这里只需要关注 MyBeanB 的创建过程中，如何注入 MyBeanA
 		 * @see AbstractAutowireCapableBeanFactory#populateBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, org.springframework.beans.BeanWrapper)
 		 * @see AutowiredAnnotationBeanPostProcessor#postProcessProperties(org.springframework.beans.PropertyValues, java.lang.Object, java.lang.String)
 		 * @see AutowiredAnnotationBeanPostProcessor.AutowiredFieldElement#inject(java.lang.Object, java.lang.String, org.springframework.beans.PropertyValues)
@@ -104,7 +107,7 @@ public class MyBeanAutowiredTest {
 		 *
 		 * 最后将 MyBeanA 注入 MyBeanB 的属性之中，并将 MyBeanB 放入单例池
 		 *
-		 * C. 返回得到的 MyBeanB 实例
+		 * D. 返回得到的 MyBeanB 实例
 		 *
 		 * 1.3.2.2 将 MyBeanB 实例注入 MyBeanA 的属性之中
 		 * field.set(bean, value);
