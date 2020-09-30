@@ -21,6 +21,10 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
  * 设置BeanA的属性(BeanB)开始 -> 执行BeanB的构造方法 -> 曝光BeanB引用 -> 设置BeanB的属性(BeanA)成功 -> 完成创建BeanB->
  * 设置BeanA的属性(BeanB)结束 -> 完成创建BeanA
  *
+ * 扩展阅读：
+ * Spring IoC 依赖注入（三）resolveDependency
+ * https://www.cnblogs.com/binarylei/p/12337145.html
+ *
  * @author Sumkor
  * @since 2020/6/16
  */
