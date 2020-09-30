@@ -1,4 +1,4 @@
-package com.sumkor.mvc;
+package com.sumkor.mvc.config;
 
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.ContextConfig;
@@ -31,6 +31,7 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 		// Load Spring web application configuration
 		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
 		context.scan("com.sumkor.mvc");
+		context.register(MvcConfig.class);
 		context.refresh();
 
 		// Create and register the DispatcherServlet

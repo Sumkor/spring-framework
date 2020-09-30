@@ -1,21 +1,29 @@
 package com.sumkor.mvc.controller;
 
+import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite;
 import org.springframework.web.method.support.InvocableHandlerMethod;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.FrameworkServlet;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
+import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import javax.servlet.http.HttpServlet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * http://localhost:8888/test/app/test01/test
+ * 使用@Controller注解实现controller
  *
  * @author Sumkor
  * @since 2020/9/26
@@ -24,9 +32,14 @@ import javax.servlet.http.HttpServlet;
 @RequestMapping("/test01")
 public class MyController01 {
 
-	@RequestMapping("/test")
+	/**
+	 * http://localhost:8888/test/app/test01/test01
+	 *
+	 * 返回字符串
+	 */
+	@RequestMapping("/test01")
 	@ResponseBody
-	public String test() {
+	public String test01() {
 		return "123";
 	}
 
@@ -58,11 +71,24 @@ public class MyController01 {
 	 * @see AbstractHandlerMethodAdapter#supports(java.lang.Object)
 	 * @see RequestMappingHandlerAdapter#supportsInternal(org.springframework.web.method.HandlerMethod)
 	 *
-	 * 3. 执行 controller，入参：Request、Response、HandlerMethod
+	 * 3. 执行 controller 并处理返回结果
 	 * @see AbstractHandlerMethodAdapter#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
 	 * @see RequestMappingHandlerAdapter#handleInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.method.HandlerMethod)
 	 * @see RequestMappingHandlerAdapter#invokeHandlerMethod(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.method.HandlerMethod)
 	 * @see ServletInvocableHandlerMethod#invokeAndHandle(org.springframework.web.context.request.ServletWebRequest, org.springframework.web.method.support.ModelAndViewContainer, java.lang.Object...)
+	 *
+	 * 3.1 执行 controller，入参：Request、Response、HandlerMethod
+	 * @see InvocableHandlerMethod#invokeForRequest(org.springframework.web.context.request.NativeWebRequest, org.springframework.web.method.support.ModelAndViewContainer, java.lang.Object...)
 	 * @see InvocableHandlerMethod#doInvoke(java.lang.Object...)
+	 *
+	 * 3.2 处理返回结果
+	 * @see HandlerMethodReturnValueHandlerComposite#handleReturnValue(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.web.method.support.ModelAndViewContainer, org.springframework.web.context.request.NativeWebRequest)
+	 *
+	 * 这里选择到了 RequestResponseBodyMethodProcessor，利用它处理返回结果
+	 * @see RequestResponseBodyMethodProcessor#handleReturnValue(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.web.method.support.ModelAndViewContainer, org.springframework.web.context.request.NativeWebRequest)
+	 *
+	 * 得到 MediaType 为 'text/html'，body 为 '123'，将其写入 response
+	 * @see AbstractMessageConverterMethodProcessor#writeWithMessageConverters(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.http.server.ServletServerHttpRequest, org.springframework.http.server.ServletServerHttpResponse)
+	 * @see AbstractHttpMessageConverter#write(java.lang.Object, org.springframework.http.MediaType, org.springframework.http.HttpOutputMessage)
 	 */
 }

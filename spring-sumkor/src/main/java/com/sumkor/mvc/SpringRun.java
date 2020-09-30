@@ -8,8 +8,7 @@ import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 
 /**
- * spring mvc 源码解读一
- * https://blog.csdn.net/sonycong/article/details/91891841
+ * SpringMVC启动入口
  *
  * @author Sumkor
  * @since 2020/9/26
@@ -20,6 +19,11 @@ public class SpringRun {
 		new SpringRun().run();
 	}
 
+	/**
+	 * 使用 Tomcat容器启动 mvc
+	 * 参考：spring mvc 源码解读一
+	 * https://blog.csdn.net/sonycong/article/details/91891841
+	 */
 	public void run() {
 		Tomcat tomcat = new Tomcat();
 		Connector connector = new Connector();
