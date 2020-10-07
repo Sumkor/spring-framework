@@ -512,7 +512,7 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 		mapping.setOrder(3);
 		mapping.setInterceptors(getInterceptors(conversionService, resourceUrlProvider));
 		mapping.setCorsConfigurations(getCorsConfigurations());
-		mapping.setMessageConverters(getMessageConverters());
+		mapping.setMessageConverters(getMessageConverters()); // 加载所有的messageConverters，用于解析mvc视图
 		return mapping;
 	}
 

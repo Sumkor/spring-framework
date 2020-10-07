@@ -44,6 +44,9 @@ public class DelegatingWebMvcConfiguration extends WebMvcConfigurationSupport {
 
 	private final WebMvcConfigurerComposite configurers = new WebMvcConfigurerComposite();
 
+	public DelegatingWebMvcConfiguration() {
+		System.out.println("-----------------DelegatingWebMvcConfiguration-----------------");
+	}
 
 	@Autowired(required = false)
 	public void setConfigurers(List<WebMvcConfigurer> configurers) {

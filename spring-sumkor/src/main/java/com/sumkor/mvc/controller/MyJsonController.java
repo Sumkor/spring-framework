@@ -3,7 +3,10 @@ package com.sumkor.mvc.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor;
+import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.util.HashMap;
@@ -28,6 +31,14 @@ public class MyJsonController {
 	 * <p>
 	 * 如果没有配置JSON视图，则报错：
 	 * 警告: Resolved [org.springframework.http.converter.HttpMessageNotWritableException: No converter found for return value of type: class java.util.HashMap]
+	 *
+	 * 若配置了JSON视图，则处理返回结果流程：
+	 * @see HandlerMethodReturnValueHandlerComposite#handleReturnValue(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.web.method.support.ModelAndViewContainer, org.springframework.web.context.request.NativeWebRequest)
+	 * @see RequestResponseBodyMethodProcessor#handleReturnValue(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.web.method.support.ModelAndViewContainer, org.springframework.web.context.request.NativeWebRequest)
+	 * @see AbstractMessageConverterMethodProcessor#writeWithMessageConverters(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.http.server.ServletServerHttpRequest, org.springframework.http.server.ServletServerHttpResponse)
+	 * 其中，选择到了 MediaType = application/json;q=0.8
+	 * 根据 MediaType 遍历选择 MessageConverter，这里选到了 MappingJackson2HttpMessageConverter，利用它来处理响应
+	 *
 	 */
 	@RequestMapping("/test00")
 	@ResponseBody

@@ -267,7 +267,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			}
 		}
 
-		if (selectedMediaType != null) { // 找到了mediaType，和body一起写入响应
+		if (selectedMediaType != null) { // 找到了mediaType，选择合适的messageConverter，将body写入响应
 			selectedMediaType = selectedMediaType.removeQualityValue();
 			for (HttpMessageConverter<?> converter : this.messageConverters) {
 				GenericHttpMessageConverter genericConverter = (converter instanceof GenericHttpMessageConverter ?
@@ -287,7 +287,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 							genericConverter.write(body, targetType, selectedMediaType, outputMessage);
 						}
 						else {
-							((HttpMessageConverter) converter).write(body, selectedMediaType, outputMessage);
+							((HttpMessageConverter) converter).write(body, selectedMediaType, outputMessage); // 通过messageConverter写入响应
 						}
 					}
 					else {
