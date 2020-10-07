@@ -1,5 +1,8 @@
 package com.sumkor.mvc.controller;
 
+import org.springframework.http.converter.AbstractGenericHttpMessageConverter;
+import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,16 +32,7 @@ public class MyJsonController {
 	/**
 	 * http://localhost:8888/test/app/json/test00
 	 * <p>
-	 * 如果没有配置JSON视图，则报错：
-	 * 警告: Resolved [org.springframework.http.converter.HttpMessageNotWritableException: No converter found for return value of type: class java.util.HashMap]
-	 *
-	 * 若配置了JSON视图，则处理返回结果流程：
-	 * @see HandlerMethodReturnValueHandlerComposite#handleReturnValue(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.web.method.support.ModelAndViewContainer, org.springframework.web.context.request.NativeWebRequest)
-	 * @see RequestResponseBodyMethodProcessor#handleReturnValue(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.web.method.support.ModelAndViewContainer, org.springframework.web.context.request.NativeWebRequest)
-	 * @see AbstractMessageConverterMethodProcessor#writeWithMessageConverters(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.http.server.ServletServerHttpRequest, org.springframework.http.server.ServletServerHttpResponse)
-	 * 其中，选择到了 MediaType = application/json;q=0.8
-	 * 根据 MediaType 遍历选择 MessageConverter，这里选到了 MappingJackson2HttpMessageConverter，利用它来处理响应
-	 *
+	 * 返回Map对象，需要序列化为JSON
 	 */
 	@RequestMapping("/test00")
 	@ResponseBody
@@ -47,6 +41,21 @@ public class MyJsonController {
 		map.put("aaa", 123);
 		return map;
 	}
+	/**
+	 * 如果没有配置JSON视图，则报错：
+	 * 警告: Resolved [org.springframework.http.converter.HttpMessageNotWritableException: No converter found for return value of type: class java.util.HashMap]
+	 *
+	 * 若配置了JSON视图，则处理返回结果流程：
+	 * @see HandlerMethodReturnValueHandlerComposite#handleReturnValue(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.web.method.support.ModelAndViewContainer, org.springframework.web.context.request.NativeWebRequest)
+	 * @see RequestResponseBodyMethodProcessor#handleReturnValue(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.web.method.support.ModelAndViewContainer, org.springframework.web.context.request.NativeWebRequest)
+	 * @see AbstractMessageConverterMethodProcessor#writeWithMessageConverters(java.lang.Object, org.springframework.core.MethodParameter, org.springframework.http.server.ServletServerHttpRequest, org.springframework.http.server.ServletServerHttpResponse)
+	 *
+	 * 其中，选择到了 MediaType = application/json;q=0.8
+	 * 根据 MediaType 遍历选择 MessageConverter，这里选到了 MappingJackson2HttpMessageConverter，利用它来处理响应
+	 * @see AbstractGenericHttpMessageConverter#write(java.lang.Object, java.lang.reflect.Type, org.springframework.http.MediaType, org.springframework.http.HttpOutputMessage)
+	 * @see AbstractJackson2HttpMessageConverter#writeInternal(java.lang.Object, java.lang.reflect.Type, org.springframework.http.HttpOutputMessage)
+	 * @see MappingJackson2HttpMessageConverter#writePrefix(com.fasterxml.jackson.core.JsonGenerator, java.lang.Object)
+	 */
 
 	/**
 	 * http://localhost:8888/test/app/json/test01

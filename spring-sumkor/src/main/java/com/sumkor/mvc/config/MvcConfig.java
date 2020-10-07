@@ -50,6 +50,10 @@ public class MvcConfig implements WebMvcConfigurer /*extends WebMvcConfiguration
 //		super.setServletContext(servletContext);
 //	}
 
+	@Override
+	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+		converters.add(jackson2HttpMessageConverter());
+	}
 	/**
 	 * 将自定的视图处理器，注册到 mvc。如何触发注册？
 	 *
@@ -74,10 +78,6 @@ public class MvcConfig implements WebMvcConfigurer /*extends WebMvcConfiguration
 	 *
 	 * 由于 DelegatingWebMvcConfiguration 是 WebMvcConfigurationSupport 的子类，因此也会处理 WebMvcConfigurationSupport 中的 @Bean注解，这里跟第 1 点相同
 	 */
-	@Override
-	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		converters.add(jackson2HttpMessageConverter());
-	}
 
 	/**
 	 * 定义 JSON 视图处理器，支持将 controller 返回值序列化为 JSON

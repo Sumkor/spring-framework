@@ -62,8 +62,11 @@ public class MyController01 {
 	 * @see AbstractHandlerMethodMapping#getHandlerInternal(javax.servlet.http.HttpServletRequest)
 	 * @see AbstractHandlerMethodMapping#lookupHandlerMethod(java.lang.String, javax.servlet.http.HttpServletRequest)
 	 *
-	 * B. 获取所有的interceptor的对象，然后与当前的handler组合在一起，构成 HandlerExecutionChain 执行链
+	 * B. 获取所有的 interceptor 过滤器对象，然后与当前的 handler 组合在一起，构成 HandlerExecutionChain 执行链
 	 * @see AbstractHandlerMapping#getHandlerExecutionChain(java.lang.Object, javax.servlet.http.HttpServletRequest)
+	 *
+	 * C. 判断是否添加 CORS拦截器 PreFlightHandler，若添加则指定由 DefaultCorsProcessor 处理跨域请求
+	 * @see AbstractHandlerMapping#getCorsHandlerExecutionChain(javax.servlet.http.HttpServletRequest, org.springframework.web.servlet.HandlerExecutionChain, org.springframework.web.cors.CorsConfiguration)
 	 *
 	 * 2. 利用 handler 查找 adapter
 	 * @see DispatcherServlet#getHandlerAdapter(java.lang.Object)

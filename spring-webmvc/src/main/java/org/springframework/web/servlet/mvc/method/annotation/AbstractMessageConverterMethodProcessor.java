@@ -284,10 +284,10 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 								"Writing [" + LogFormatUtils.formatValue(theBody, !traceOn) + "]");
 						addContentDispositionHeader(inputMessage, outputMessage);
 						if (genericConverter != null) {
-							genericConverter.write(body, targetType, selectedMediaType, outputMessage);
+							genericConverter.write(body, targetType, selectedMediaType, outputMessage); // 通过messageConverter处理响应
 						}
 						else {
-							((HttpMessageConverter) converter).write(body, selectedMediaType, outputMessage); // 通过messageConverter写入响应
+							((HttpMessageConverter) converter).write(body, selectedMediaType, outputMessage);
 						}
 					}
 					else {
