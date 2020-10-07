@@ -31,6 +31,7 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 		// Load Spring web application configuration
 		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
 		context.scan("com.sumkor.mvc");
+		context.setServletContext(servletContext); // 用于注入WebMvcConfigurationSupport
 		context.register(MvcConfig.class);
 		context.refresh();
 

@@ -267,7 +267,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			}
 		}
 
-		if (selectedMediaType != null) {
+		if (selectedMediaType != null) { // 找到了mediaType，和body一起写入响应
 			selectedMediaType = selectedMediaType.removeQualityValue();
 			for (HttpMessageConverter<?> converter : this.messageConverters) {
 				GenericHttpMessageConverter genericConverter = (converter instanceof GenericHttpMessageConverter ?

@@ -8,7 +8,7 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandlerCom
 import org.springframework.web.method.support.InvocableHandlerMethod;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.FrameworkServlet;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.handler.AbstractHandlerMapping;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
@@ -16,11 +16,8 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConv
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import javax.servlet.http.HttpServlet;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 使用@Controller注解实现controller
@@ -34,7 +31,7 @@ public class MyController01 {
 
 	/**
 	 * http://localhost:8888/test/app/test01/test01
-	 *
+	 * <p>
 	 * 返回字符串
 	 */
 	@RequestMapping("/test01")
@@ -52,15 +49,21 @@ public class MyController01 {
 	 * @see DispatcherServlet#doService(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 * @see DispatcherServlet#doDispatch(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 *
-	 * 1. 根据请求获取 handler
+	 * 1. 根据请求获取 handler 执行链
 	 * @see DispatcherServlet#getHandler(javax.servlet.http.HttpServletRequest)
 	 *
 	 * 遍历 handlerMappings，其中具有三种 HandlerMapping 对象：BeanNameUrlHandlerMapping、RequestMappingHandlerMapping、RouterFunctionMapping
 	 *
-	 * 1.1 命中 RequestMappingHandlerMapping，根据 uri 找到对应的 controller方法，这里为 com.sumkor.mvc.controller.MyController01#test()，将其封装为 HandlerMethod 对象
+	 * 1.1 命中 RequestMappingHandlerMapping
+	 * @see AbstractHandlerMapping#getHandler(javax.servlet.http.HttpServletRequest)
+	 *
+	 * A. 根据 uri 找到对应的 controller方法，这里为 com.sumkor.mvc.controller.MyController01#test()，将其封装为 HandlerMethod 对象
 	 * @see RequestMappingInfoHandlerMapping#getHandlerInternal(javax.servlet.http.HttpServletRequest)
 	 * @see AbstractHandlerMethodMapping#getHandlerInternal(javax.servlet.http.HttpServletRequest)
 	 * @see AbstractHandlerMethodMapping#lookupHandlerMethod(java.lang.String, javax.servlet.http.HttpServletRequest)
+	 *
+	 * B. 获取所有的interceptor的对象，然后与当前的handler组合在一起，构成 HandlerExecutionChain 执行链
+	 * @see AbstractHandlerMapping#getHandlerExecutionChain(java.lang.Object, javax.servlet.http.HttpServletRequest)
 	 *
 	 * 2. 利用 handler 查找 adapter
 	 * @see DispatcherServlet#getHandlerAdapter(java.lang.Object)
