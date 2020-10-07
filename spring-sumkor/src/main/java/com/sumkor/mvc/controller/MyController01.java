@@ -10,6 +10,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.FrameworkServlet;
 import org.springframework.web.servlet.handler.AbstractHandlerMapping;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
+import org.springframework.web.servlet.handler.AbstractUrlHandlerMapping;
 import org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor;
@@ -20,7 +21,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHan
 import javax.servlet.http.HttpServlet;
 
 /**
- * 使用@Controller注解实现controller
+ * SpringMVC 中注册 controller，具有两大类型(@Controller(url)、@Component(beanName))，三种实现：
+ *
+ * 1. 使用 @Controller 注解，此时 handler 为 RequestMappingHandlerMapping，Adapter 为 RequestMappingHandlerAdapter
+ * 2. 实现 Controller 接口，此时 handler 为 BeanNameUrlHandlerMapping，Adapter 为 SimpleControllerHandlerAdapter
+ * 3. 实现 HttpRequestHandler 接口，此时 handler 为 BeanNameUrlHandlerMapping，Adapter 为 HttpRequestHandlerAdapter
+ *
+ * 对于 RequestMappingHandlerMapping，url-controller对应关系存储在 {@link AbstractHandlerMethodMapping.MappingRegistry#urlLookup} 其中value为list
+ * 对于 BeanNameUrlHandlerMapping，url-controller对应关系存储在 {@link AbstractUrlHandlerMapping#handlerMap}
  *
  * @author Sumkor
  * @since 2020/9/26
@@ -49,7 +57,8 @@ public class MyController01 {
 	 * @see DispatcherServlet#doService(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 * @see DispatcherServlet#doDispatch(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 *
-	 * 1. 根据请求获取 handler 执行链
+	 *
+	 * 1. 根据请求获取 handler 执行链（找到 controller）
 	 * @see DispatcherServlet#getHandler(javax.servlet.http.HttpServletRequest)
 	 *
 	 * 遍历 handlerMappings，其中具有三种 HandlerMapping 对象：BeanNameUrlHandlerMapping、RequestMappingHandlerMapping、RouterFunctionMapping
@@ -68,16 +77,17 @@ public class MyController01 {
 	 * C. 判断是否添加 CORS拦截器 PreFlightHandler，若添加则指定由 DefaultCorsProcessor 处理跨域请求
 	 * @see AbstractHandlerMapping#getCorsHandlerExecutionChain(javax.servlet.http.HttpServletRequest, org.springframework.web.servlet.HandlerExecutionChain, org.springframework.web.cors.CorsConfiguration)
 	 *
-	 * 2. 利用 handler 查找 adapter
+	 *
+	 * 2. 利用 handler 查找 adapter（对3种方式实现的 controller 进行适配）
 	 * @see DispatcherServlet#getHandlerAdapter(java.lang.Object)
 	 *
 	 * 遍历 handlerAdapters，其中具有四种 HandlerAdapter 对象：HttpRequestHandlerAdapter、SimpleControllerHandlerAdapter、RequestMappingHandlerAdapter、HandlerFunctionAdapter
 	 *
-	 * 2.1 命中 RequestMappingHandlerAdapter
+	 * 2.1 命中 RequestMappingHandlerAdapter（命中条件：handler 为 HandlerMethod 对象的实例，因为@Controller注解的类被封装为 HandlerMethod 对象）
 	 * @see AbstractHandlerMethodAdapter#supports(java.lang.Object)
-	 * @see RequestMappingHandlerAdapter#supportsInternal(org.springframework.web.method.HandlerMethod)
 	 *
-	 * 3. 执行 controller 并处理返回结果
+	 *
+	 * 3. 执行 controller 并处理返回结果（若@Controller(url)方式，则使用反射来调用具体的Controller，若@Component(beanName)方式，则通过接口来调用具体的Controller）
 	 * @see AbstractHandlerMethodAdapter#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object)
 	 * @see RequestMappingHandlerAdapter#handleInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.method.HandlerMethod)
 	 * @see RequestMappingHandlerAdapter#invokeHandlerMethod(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.method.HandlerMethod)
