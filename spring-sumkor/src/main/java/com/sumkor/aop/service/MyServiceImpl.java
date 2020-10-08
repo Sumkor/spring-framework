@@ -11,7 +11,7 @@ public class MyServiceImpl implements MyService {
 
 	@Override
 	public void say() {
-		System.out.println("hello 中文");
+		System.out.println("say 中文");
 	}
 
 	@Override
