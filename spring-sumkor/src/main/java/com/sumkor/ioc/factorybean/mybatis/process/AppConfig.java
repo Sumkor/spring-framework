@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Import;
  * @since 2020/9/8
  */
 @Configuration
-@ComponentScan("com.sumkor.ioc.factorybean.mybatis")
-@Import(MyImportBeanDefinitionRegistrar.class)
-@MyScan("com.sumkor.ioc.factorybean.mybatis.mapper")
+@ComponentScan("com.sumkor.ioc.factorybean.mybatis") // IOC扫描
+@Import(MyImportBeanDefinitionRegistrar.class) // beanDefinition注册
+@MyScan("com.sumkor.ioc.factorybean.mybatis.mapper") // 自定义mapper扫描
 public class AppConfig {
 }

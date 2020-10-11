@@ -9,6 +9,7 @@ import org.springframework.context.support.GenericApplicationContext;
  * 2. bean注解扫描
  * <p>
  * 解析配置类下的@Bean
+ * 配置类指的是@Component注解的类，@Configuration实际上也是@Component
  *
  * @author Sumkor
  * @since 2020/6/15
@@ -21,7 +22,7 @@ public class MyBeanScanTest {
 		 * 父构造方法中，创建 beanFactory
 		 * @see GenericApplicationContext#GenericApplicationContext()
 		 *
-		 * 默认扫描 @Component 注解
+		 * 默认扫描 @Component 注解！！
 		 * @see ClassPathBeanDefinitionScanner#ClassPathBeanDefinitionScanner(org.springframework.beans.factory.support.BeanDefinitionRegistry)
 		 * @see ClassPathScanningCandidateComponentProvider#registerDefaultFilters()
 		 */

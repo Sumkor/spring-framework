@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 向 BeanFactory 注册 BeanDefinition
+ * 使用 BeanFactoryPostProcessor 向 BeanFactory 注册 BeanDefinition
  *
  * @author Sumkor
  * @since 2020/9/18
