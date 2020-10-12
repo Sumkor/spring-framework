@@ -460,7 +460,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		if (resolvedBeanNames != null) {
 			return resolvedBeanNames;
 		}
-		resolvedBeanNames = doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, true);
+		resolvedBeanNames = doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, true); // 关键代码
 		if (ClassUtils.isCacheSafe(type, getBeanClassLoader())) {
 			cache.put(type, resolvedBeanNames);
 		}
@@ -471,7 +471,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		List<String> result = new ArrayList<>();
 
 		// Check all bean definitions.
-		for (String beanName : this.beanDefinitionNames) {
+		for (String beanName : this.beanDefinitionNames) { // 遍历所有的beanName，检查与beanType是否匹配
 			// Only consider bean as eligible if the bean name
 			// is not defined as alias for some other bean.
 			if (!isAlias(beanName)) {
@@ -488,16 +488,16 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						boolean isNonLazyDecorated = dbd != null && !mbd.isLazyInit();
 						if (!isFactoryBean) {
 							if (includeNonSingletons || isSingleton(beanName, mbd, dbd)) {
-								matchFound = isTypeMatch(beanName, type, allowFactoryBeanInit);
+								matchFound = isTypeMatch(beanName, type, allowFactoryBeanInit); // 如果不是FactoryBean，检查beanName与beanType是否匹配
 							}
 						}
 						else  {
 							if (includeNonSingletons || isNonLazyDecorated ||
 									(allowFactoryBeanInit && isSingleton(beanName, mbd, dbd))) {
-								matchFound = isTypeMatch(beanName, type, allowFactoryBeanInit);
+								matchFound = isTypeMatch(beanName, type, allowFactoryBeanInit); // 如果是FactoryBean，检查beanName与beanType是否匹配
 							}
 							if (!matchFound) {
-								// In case of FactoryBean, try to match FactoryBean instance itself next.
+								// In case of FactoryBean, try to match FactoryBean instance itself next. // beanName加上&前缀，尝试匹配FactoryBean本身
 								beanName = FACTORY_BEAN_PREFIX + beanName;
 								matchFound = isTypeMatch(beanName, type, allowFactoryBeanInit);
 							}
@@ -1113,7 +1113,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			ResolvableType requiredType, @Nullable Object[] args, boolean nonUniqueAsNull) throws BeansException {
 
 		Assert.notNull(requiredType, "Required type must not be null");
-		String[] candidateNames = getBeanNamesForType(requiredType);
+		String[] candidateNames = getBeanNamesForType(requiredType); // 根据beanType获取beanName
 
 		if (candidateNames.length > 1) {
 			List<String> autowireCandidates = new ArrayList<>(candidateNames.length);
@@ -1129,7 +1129,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		if (candidateNames.length == 1) {
 			String beanName = candidateNames[0];
-			return new NamedBeanHolder<>(beanName, (T) getBean(beanName, requiredType.toClass(), args));// 根据beanName去获取bean实例
+			return new NamedBeanHolder<>(beanName, (T) getBean(beanName, requiredType.toClass(), args)); // 根据beanName去获取bean实例
 		}
 		else if (candidateNames.length > 1) {
 			Map<String, Object> candidates = new LinkedHashMap<>(candidateNames.length);

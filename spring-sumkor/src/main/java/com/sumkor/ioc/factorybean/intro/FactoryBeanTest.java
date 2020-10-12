@@ -1,11 +1,9 @@
 package com.sumkor.ioc.factorybean.intro;
 
 import com.sumkor.ioc.bean.MyBean;
+import org.junit.Test;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
-import org.springframework.beans.factory.support.AbstractBeanFactory;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
-import org.springframework.beans.factory.support.FactoryBeanRegistrySupport;
+import org.springframework.beans.factory.support.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.util.Assert;
 
@@ -90,21 +88,23 @@ public class FactoryBeanTest {
 		System.out.println("myBean02 = " + myBean02);// com.sumkor.ioc.bean.MyBean@76b0bfab
 		/**
 		 * 根据 BeanType 获取 bean 实例
-		 * {@link DefaultListableBeanFactory#resolveNamedBean(org.springframework.core.ResolvableType, java.lang.Object[], boolean)}
+		 * @see DefaultListableBeanFactory#resolveBean(org.springframework.core.ResolvableType, java.lang.Object[], boolean)
+		 * @see DefaultListableBeanFactory#resolveNamedBean(org.springframework.core.ResolvableType, java.lang.Object[], boolean)
 		 *
-		 * 1.1 根据 BeanType 获取 beanName
-		 * {@link DefaultListableBeanFactory#getBeanNamesForType(org.springframework.core.ResolvableType, boolean, boolean)}
-		 * {@link DefaultListableBeanFactory#getBeanNamesForType(java.lang.Class, boolean, boolean)}
+		 * 1.1 根据 BeanType 获取 beanName。这里检查到 beanName 'myFactoryBean' 可以匹配 MyBean.class
+		 * @see DefaultListableBeanFactory#getBeanNamesForType(org.springframework.core.ResolvableType, boolean, boolean)
+		 * @see DefaultListableBeanFactory#getBeanNamesForType(java.lang.Class, boolean, boolean)
 		 *
 		 * 遍历所有的 beanDefinitionNames(beanName 集合)，判断 beanName 与 beanType 是否符合
-		 * {@link DefaultListableBeanFactory#doGetBeanNamesForType(org.springframework.core.ResolvableType, boolean, boolean)}
+		 * @see DefaultListableBeanFactory#doGetBeanNamesForType(org.springframework.core.ResolvableType, boolean, boolean)
 		 *
 		 * 根据 beanName 'myFactoryBean' 获取到 myFactoryBean 实例，调用 FactoryBean.getObject 获得 MyBean 类型，用于判断类型是否符合
-		 * {@link AbstractBeanFactory#isTypeMatch(java.lang.String, org.springframework.core.ResolvableType, boolean)}
-		 * {@link FactoryBeanRegistrySupport#getTypeForFactoryBean(org.springframework.beans.factory.FactoryBean)}
+		 * @see AbstractBeanFactory#isTypeMatch(java.lang.String, org.springframework.core.ResolvableType, boolean)
+		 * @see FactoryBeanRegistrySupport#getTypeForFactoryBean(org.springframework.beans.factory.FactoryBean)
 		 *
-		 * 1.2 根据获取到的 beanName 'myFactoryBean'，从单例池中获取 Bean 实例
-		 * {@link AbstractBeanFactory#doGetBean(java.lang.String, java.lang.Class, java.lang.Object[], boolean)}
+		 * 1.2 根据获取到的 beanName 'myFactoryBean'，从单例池中获取 MyFactoryBean 实例，再从 factoryBeanObjectCache 获取 MyBean 实例
+		 * @see AbstractBeanFactory#doGetBean(java.lang.String, java.lang.Class, java.lang.Object[], boolean)
+		 * @see AbstractAutowireCapableBeanFactory#getObjectForBeanInstance(java.lang.Object, java.lang.String, java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition)
 		 */
 	}
 }
