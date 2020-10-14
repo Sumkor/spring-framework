@@ -1,7 +1,6 @@
 package com.sumkor.ioc.factorybean.intro;
 
 import com.sumkor.ioc.bean.MyBean;
-import org.junit.Test;
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.beans.factory.support.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

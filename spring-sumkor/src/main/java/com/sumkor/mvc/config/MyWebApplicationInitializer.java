@@ -13,7 +13,8 @@ import javax.servlet.ServletRegistration;
 
 /**
  * 使用 WebApplicationInitializer 替代 web.xml，如何使 web 容器在启动时加载 web.xml 配置文件？
- * 利用SPI机制，当 tomcat 启动时，扫描项目 META-INF/services 目录下的文件，执行 ServletContainerInitializer.onStartup 方法使得 web 容器能够加载到 web.xml 配置
+ * 利用SPI机制，当 tomcat 启动时，扫描项目文件 spring-web/src/main/resources/META-INF/services/javax.servlet.ServletContainerInitializer，
+ * 执行 ServletContainerInitializer.onStartup 方法使得 web 容器能够加载到 web.xml 配置
  *
  * @see javax.servlet.ServletContainerInitializer
  * @see org.springframework.web.SpringServletContainerInitializer
@@ -26,12 +27,16 @@ import javax.servlet.ServletRegistration;
  */
 public class MyWebApplicationInitializer implements WebApplicationInitializer {
 
+	/**
+	 * 设置 Spring context，并加载 web.xml。参考：
+	 * https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/web.html#mvc-servlet
+	 */
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		// Load Spring web application configuration
 		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
 		context.scan("com.sumkor.mvc");
-		context.setServletContext(servletContext); // 用于注入WebMvcConfigurationSupport
+		context.setServletContext(servletContext); // 用于注入WebMvcConfigurationSupport，见MvcConfig
 		context.register(MvcConfig.class);
 		context.refresh();
 
