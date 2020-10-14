@@ -552,7 +552,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
-			populateBean(beanName, mbd, instanceWrapper);// 属性赋值
+			populateBean(beanName, mbd, instanceWrapper);// 属性赋值 // 若有循环依赖，则会执行第三级缓存的lambda表达式，并存入第二级缓存
 			exposedObject = initializeBean(beanName, exposedObject, mbd);// 调用初始化方法
 		}
 		catch (Throwable ex) {
@@ -566,7 +566,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (earlySingletonExposure) {// 第二次处理，防止对象被改变 造成的已创建对象中持有的对象和这个对象不一致
-			Object earlySingletonReference = getSingleton(beanName, false);// 若有AOP，这里得到的是代理对象
+			Object earlySingletonReference = getSingleton(beanName, false);// 若有循环依赖，这里从二级缓存拿到代理对象或原始对象
 			if (earlySingletonReference != null) {
 				if (exposedObject == bean) {// 校验原始的bean，在经历了属性赋值populateBean、初始化initializeBean之后，有没有改变
 					exposedObject = earlySingletonReference;// 若有AOP，这里将exposedObject的值从原始对象赋值为代理对象
@@ -601,7 +601,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					mbd.getResourceDescription(), beanName, "Invalid destruction signature", ex);
 		}
 
-		return exposedObject;
+		return exposedObject; // 这里返回的实例，在后续逻辑会存入单例池，见 DefaultSingletonBeanRegistry.getSingleton。若有循环依赖，则第二级缓存与第一级缓存，存储的是同一个实例。
 	}
 
 	@Override
@@ -921,7 +921,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object exposedObject = bean;
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
-				if (bp instanceof SmartInstantiationAwareBeanPostProcessor) {// AOP处理器
+				if (bp instanceof SmartInstantiationAwareBeanPostProcessor) {// AOP处理器满足条件，为该接口的实例
 					SmartInstantiationAwareBeanPostProcessor ibp = (SmartInstantiationAwareBeanPostProcessor) bp;
 					exposedObject = ibp.getEarlyBeanReference(exposedObject, beanName);// 生成AOP动态代理的对象
 				}

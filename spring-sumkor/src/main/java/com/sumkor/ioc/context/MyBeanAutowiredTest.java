@@ -103,7 +103,7 @@ public class MyBeanAutowiredTest {
 		 *
 		 * 尝试根据 beanName、beanType 来获取 bean 实例
 		 * @see AbstractBeanFactory#doGetBean(java.lang.String, java.lang.Class, java.lang.Object[], boolean)
-		 * 在单例池中获取到了 MyBeanA 实例，因为用的是 getSingleton(beanName, true) 从第三级缓存获取到了！！！
+		 * 在单例池中获取到了 MyBeanA 实例，因为用的是 getSingleton(beanName, true) 从第三级缓存获取到了！！！【若从第三级缓存获取到了bean，则将第三级缓存升级为第二级缓存】
 		 * @see DefaultSingletonBeanRegistry#getSingleton(java.lang.String, boolean)
 		 *
 		 * 执行 MyBeanA 提前曝光的 lambda，得到 myBeanA 实例，此时该实例的属性是空的
@@ -143,6 +143,25 @@ public class MyBeanAutowiredTest {
 		 * hello MyBeanB
 		 * hello MyBeanB
 		 * hello MyBeanA
+		 */
+
+		/**
+		 * 为什么需要三级缓存？
+		 *
+		 * 如果只是解决普遍 bean 的循环依赖，两级缓存就足够了。
+		 * 提前曝光时将早期 bean 存储在第二级缓存，若其他 bean 依赖了该 bean，从第二级缓存获取即可。待该 bean 执行完生命周期后再存入第一级缓存。
+		 *
+		 * 但是，如果是解决动态代理的 bean 的循环依赖，则需要三级缓存。
+		 * 因为提前曝光时，存储在第三级缓存的 singletonFactory 对象是一个 lambda 函数，当其他 bean 依赖当前 bean 时，才执行该 lambda 生成代理对象。
+		 * 如果只有二级缓存，则不管有没有其他 bean 依赖，在提前曝光时，都需要提前生成代理对象存入二级缓存，这就打乱了 bean 生命周期的正常流程。
+		 *
+		 * 此外，三级缓存提供了扩展点。
+		 * 当 bean 从第三级缓存升级到第二级环境时，Spring 提供了扩展点，方便对该 bean 做一些设置处理再存入第二级缓存（例如动态代理等）。
+		 * 如果只有二级缓存，则达不到这个效果。
+		 *
+		 * @see AbstractAutowireCapableBeanFactory#doCreateBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Object[])
+		 * @see AbstractAutowireCapableBeanFactory#getEarlyBeanReference(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Object)
+		 * @see DefaultSingletonBeanRegistry#getSingleton(java.lang.String, boolean)
 		 */
 	}
 }
