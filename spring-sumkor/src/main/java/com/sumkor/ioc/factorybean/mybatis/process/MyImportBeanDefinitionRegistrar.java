@@ -15,10 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 将 BeanDefinition 注册到 BeanFactory.BeanDefinitionMap 的几种方式：
- * 1. ComponentScan 扫描 Bean，生成 BeanDefinition 并注册
- * 2. @Import 导入，实现 ImportBeanDefinitionRegistrar 接口，生成 BeanDefinition 并注册
- * 3. 实现 BeanDefinitionRegistryPostProcessor 接口，生成 BeanDefinition 并注册
+ * 将 BeanDefinition 注册到 BeanFactory.BeanDefinitionMap
  *
  * @author Sumkor
  * @since 2020/9/14
@@ -42,7 +39,7 @@ public class MyImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegi
 			AbstractBeanDefinition beanDefinition = beanDefinitionBuilder.getBeanDefinition();
 			beanDefinition.setBeanClass(MyFactoryBean.class);
 			beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(mapper);// MyFactoryBean构造函数入参赋值
-			registry.registerBeanDefinition(mapper.getSimpleName(), beanDefinition);
+			registry.registerBeanDefinition(mapper.getSimpleName(), beanDefinition);// 注册BeanDefinition
 		}
 	}
 }

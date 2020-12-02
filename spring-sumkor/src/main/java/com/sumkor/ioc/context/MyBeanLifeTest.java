@@ -3,6 +3,8 @@ package com.sumkor.ioc.context;
 import com.sumkor.ioc.bean.life.MyBeanFactoryPostProcessor;
 import com.sumkor.ioc.bean.life.MyBeanLife;
 import com.sumkor.ioc.bean.life.MyBeanPostProcessor;
+import com.sumkor.ioc.factorybean.mybatis.process.MyBeanDefinitionRegistryPostProcessor;
+import com.sumkor.ioc.factorybean.mybatis.process.MyImportBeanDefinitionRegistrar;
 import org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.support.*;
 import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
@@ -15,6 +17,15 @@ import org.springframework.context.support.GenericApplicationContext;
  * https://www.cnblogs.com/javazhiyin/p/10905294.html
  *
  * class -> BeanDefinition -> BeanFactoryPostProcessor -> new Object -> 填充属性 -> Aware -> BeanPostProcessor/AOP -> 单例池
+ *
+ * 将 BeanDefinition 注册到 BeanFactory.BeanDefinitionMap 的几种方式：
+ * 1. ComponentScan 扫描 Bean，生成 BeanDefinition 并注册
+ * 2. AnnotationConfigApplicationContext#register 手动注册到 Spring 容器中
+ * 3. @Import 导入，实现 ImportBeanDefinitionRegistrar 接口，生成 BeanDefinition 并注册
+ * 4. 实现 BeanDefinitionRegistryPostProcessor 接口，生成 BeanDefinition 并注册
+ *
+ * @see MyImportBeanDefinitionRegistrar
+ * @see MyBeanDefinitionRegistryPostProcessor
  *
  * @author Sumkor
  * @since 2020/5/14
