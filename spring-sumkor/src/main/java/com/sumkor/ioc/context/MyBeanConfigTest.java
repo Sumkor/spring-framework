@@ -30,19 +30,33 @@ public class MyBeanConfigTest {
 		System.out.println("myBean04 = " + myBean04);
 
 		/**
-		 * > Task :spring-sumkor:MyBeanConfigTest.main()
-		 * myBean01 = com.sumkor.ioc.bean.MyBean@6eceb130
-		 * myBean02 = com.sumkor.ioc.bean.MyBean@10a035a0
+		 * 1. 在 MyConfig 类上，如果使用 @Configuration 修饰类，则调用 MyConfig#myBean 方法得到的是单例，且与 beanName 得到的实例相同。
+		 * 执行结果如下：
+		 * myBean01 = com.sumkor.ioc.bean.MyBean@341b80b2
+		 * myBean02 = com.sumkor.ioc.bean.MyBean@341b80b2
+		 * myBean03 = com.sumkor.ioc.bean.MyBean@341b80b2
+		 * myBean04 = com.sumkor.ioc.bean.MyBean@341b80b2
+		 *
+		 * 2. 在 MyConfig 类上，如果使用 @Component 修饰类，则调用 MyConfig#myBean 方法得到的是多例，但是 beanName 得到的默认是单例。
+		 * 执行结果如下：
+		 * myBean01 = com.sumkor.ioc.bean.MyBean@1786f9d5
+		 * myBean02 = com.sumkor.ioc.bean.MyBean@704d6e83
+		 * myBean03 = com.sumkor.ioc.bean.MyBean@43a0cee9
+		 * myBean04 = com.sumkor.ioc.bean.MyBean@43a0cee9
+		 *
+		 * 3. 在 MyConfig 类中，如果使用 @Configuration 修饰类，在 MyConfig#myBean 方法上加上 @Scope("prototype") 来修饰，则得到多例。
+		 * 执行结果如下：
+		 * myBean01 = com.sumkor.ioc.bean.MyBean@1f1c7bf6
+		 * myBean02 = com.sumkor.ioc.bean.MyBean@25b485ba
+		 * myBean03 = com.sumkor.ioc.bean.MyBean@2b546384
+		 * myBean04 = com.sumkor.ioc.bean.MyBean@5d740a0f
+		 *
+		 * 4. 在 MyConfig 类中，如果使用 @Component 修饰类，在 MyConfig#myBean 方法上加上 @Scope("prototype") 来修饰，同样得到多例。
+		 * 执行结果如下：
+		 * myBean01 = com.sumkor.ioc.bean.MyBean@3578436e
+		 * myBean02 = com.sumkor.ioc.bean.MyBean@706a04ae
 		 * myBean03 = com.sumkor.ioc.bean.MyBean@67b467e9
-		 * myBean04 = com.sumkor.ioc.bean.MyBean@67b467e9
-		 *
-		 * 在 MyConfig 类上：
-		 * 如果使用 @Configuration 修饰类，则调用 MyConfig#myBean 方法得到的是单例；
-		 * 如果使用 @Component 修饰类，则调用 MyConfig#myBean 方法得到的是多例。
-		 *
-		 * 如果在 MyConfig#myBean 方法上加上 @Scope("singleton") 来修饰：
-		 * 对调用 MyConfig#myBean 方法的结果没有影响；
-		 * 对使用 beanName 来获取，得到的是单例（实际上，不加 @Scope 注解的时候默认就是单例）。
+		 * myBean04 = com.sumkor.ioc.bean.MyBean@47db50c5
 		 */
 	}
 }

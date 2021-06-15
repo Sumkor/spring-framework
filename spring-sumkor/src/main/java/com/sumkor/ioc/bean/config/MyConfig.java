@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Sumkor
@@ -15,7 +16,8 @@ import org.springframework.stereotype.Component;
 public class MyConfig {
 
 	@Bean
-	@Scope("singleton")
+	//@Scope("singleton") // 默认值
+	@Scope("prototype")
 	public MyBean myBean() {
 		return new MyBean();
 	}
